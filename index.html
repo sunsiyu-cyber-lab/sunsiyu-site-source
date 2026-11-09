@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>思宇 | 科技个人主页</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+</head>
+<body>
+
+<div id="particles-js"></div>
+
+<header>
+  <nav>
+    <ul>
+      <li><a href="#home" class="active">🏠 首页</a></li>
+      <li><a href="#project">📦 我的项目</a></li>
+      <li><a href="#about">👤 关于我</a></li>
+    </ul>
+    <button class="nav-btn" onclick="copyWechat()">💬 联系我</button>
+  </nav>
+</header>
+
+<section id="home" class="hero">
+  <div class="avatar-box">
+    <div class="avatar-ring"></div>
+    <img src="img/avatar.jpg" class="avatar" alt="思宇">
+  </div>
+  <h1>思宇</h1>
+  <h2 id="typing">全栈开发者 &amp; 创意科技探索者</h2>
+  <p>用代码创造价值 &nbsp;·&nbsp; 用科技改变生活</p>
+  <div class="hero-btns">
+    <a href="#project" class="btn-fill">📦 我的项目</a>
+    <button onclick="copyWechat()">💬 联系我</button>
+  </div>
+</section>
+
+<section id="project" class="projects">
+  <h2 class="title"><i>//</i> 我的项目 <i>//</i></h2>
+  <p class="sub">专业 · 高效 · 创新</p>
+  <div class="cards">
+    <div class="card" data-i="0" role="button" tabindex="0"><div class="num">01</div><div class="ico">📱</div><h3>微信小程序开发</h3><p>专业定制各类小程序<br>开发流程 &amp; 时间预估</p><span class="more">查看详情 →</span></div>
+    <div class="card" data-i="1" role="button" tabindex="0"><div class="num">02</div><div class="ico">💻</div><h3>软件开发</h3><p>桌面软件 · 管理系统 · 工具软件<br>高效稳定 · 安全可靠</p><span class="more">查看详情 →</span></div>
+    <div class="card" data-i="2" role="button" tabindex="0"><div class="num">03</div><div class="ico">🧑‍💻</div><h3>AI换脸</h3><p>直播换脸 · 视频换脸 · 图片换脸<br>支持各大直播平台兼容</p><span class="more">查看详情 →</span></div>
+    <div class="card" data-i="3" role="button" tabindex="0"><div class="num">04</div><div class="ico">📍</div><h3>Android+iPhone定位</h3><p>精准定位 · 实时追踪 · 安全稳定<br>保护家人 · 企业设备管理</p><span class="more">查看详情 →</span></div>
+    <div class="card" data-i="4" role="button" tabindex="0"><div class="num">05</div><div class="ico">🌐</div><h3>网页搭建</h3><p>响应式网站 · 企业官网 · 个人网站<br>开发流程 &amp; 时间预估</p><span class="more">查看详情 →</span></div>
+    <div class="card" data-i="5" role="button" tabindex="0"><div class="num">06</div><div class="ico">🧊</div><h3>苹果软件多开</h3><p>一台设备 · 多个账号<br>稳定防封 · 安全高效</p><span class="more">查看详情 →</span></div>
+    <div class="card" data-i="6" role="button" tabindex="0"><div class="num">07</div><div class="ico">🐉</div><h3>Kali Linux</h3><p>Kali 渗透测试 · 安全攻防 · 漏洞挖掘<br>从入门到入狱 · 实战教学</p><span class="more">查看详情 →</span></div>
+    <div class="card" data-i="7" role="button" tabindex="0"><div class="num">08</div><div class="ico">⚙️</div><h3>更多定制开发</h3><p>根据需求定制各类软件<br>满足您的个性化需求</p><span class="more">查看详情 →</span></div>
+  </div>
+</section>
+
+<section id="about" class="about">
+  <h2 class="title"><i>//</i> 关于我 <i>//</i></h2>
+  <div class="about-box">
+    <div>
+      <h3>个人简介</h3>
+      <p>你好，我是思宇，一名热爱技术的全栈开发者，日常和代码、终端打交道，也喜欢把想法做成真正能用的东西。</p>
+      <p>我主要做微信小程序、桌面软件和网站，也涉足 Android、iOS 应用与 AI 技术，并长期钻研 Kali Linux 与网络安全，乐于带新人从入门到入狱。</p>
+      <p>做项目我习惯先把需求聊清楚，再动手开发：流程透明、沟通及时，交付后继续跟进维护。</p>
+      <p>相信用代码和创意能为客户创造实实在在的价值，有想法欢迎随时找我聊聊。</p>
+    </div>
+    <div>
+      <h3>我会用到的工具</h3>
+      <div class="tools">
+        <span class="tool" role="button" tabindex="0" data-t="0"><b style="background:#1f9cf0;">VS</b>VS Code</span>
+        <span class="tool" role="button" tabindex="0" data-t="1"><b style="background:#21d789;color:#000;">PC</b>PyCharm</span>
+        <span class="tool" role="button" tabindex="0" data-t="2"><b style="background:#3ddc84;color:#073;">AS</b>Android Studio</span>
+        <span class="tool" role="button" tabindex="0" data-t="3"><b style="background:#147efb;">Xc</b>Xcode</span>
+        <span class="tool" role="button" tabindex="0" data-t="4"><b style="background:#3776ab;color:#ffd43b;">Py</b>Python</span>
+        <span class="tool" role="button" tabindex="0" data-t="5"><b style="background:#539e43;">JS</b>Node.js</span>
+        <span class="tool" role="button" tabindex="0" data-t="6"><b style="background:#f05032;">Git</b>Git</span>
+        <span class="tool" role="button" tabindex="0" data-t="7"><b style="background:#24292f;border:1px solid #8b949e;">GH</b>GitHub</span>
+        <span class="tool" role="button" tabindex="0" data-t="8"><b style="background:#2496ed;">Dk</b>Docker</span>
+        <span class="tool" role="button" tabindex="0" data-t="9"><b style="background:#00758f;font-size:12px;">SQL</b>MySQL</span>
+        <span class="tool" role="button" tabindex="0" data-t="10"><b style="background:#07c160;">WX</b>微信开发者工具</span>
+        <span class="tool" role="button" tabindex="0" data-t="11"><b style="background:#ff6c37;">Pm</b>Postman</span>
+        <span class="tool" role="button" tabindex="0" data-t="12"><b style="background:#367bf0;">K</b>Kali Linux</span>
+        <span class="tool" role="button" tabindex="0" data-t="13"><b style="background:#ff6633;">Bp</b>Burp Suite</span>
+        <span class="tool" role="button" tabindex="0" data-t="14"><b style="background:#2c7a4b;">Nm</b>Nmap</span>
+        <span class="tool" role="button" tabindex="0" data-t="15"><b style="background:#1679a7;">Ws</b>Wireshark</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <h2>联系我</h2>
+  <p>有项目需求？欢迎联系我！</p>
+  <div class="wechat-box">
+    💬 微信：<span id="wechat">+1 778 830 1013</span>
+  </div>
+</section>
+
+
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="modal-box" role="dialog" aria-modal="true">
+    <button class="modal-x" aria-label="关闭">×</button>
+    <div class="m-ico" id="m-ico"></div>
+    <h3 id="m-title"></h3>
+    <p id="m-intro" class="m-intro"></p>
+    <h4>服务内容</h4><ul id="m-list"></ul>
+    <h4>适用场景</h4><p id="m-scene"></p>
+    <h4>合作流程</h4>
+    <ol class="m-flow"><li>沟通需求</li><li>方案确认</li><li>开发测试</li><li>交付售后</li></ol>
+    <p id="m-note" class="m-note"></p>
+    <button class="m-cta" onclick="copyWechat()">💬 复制微信号咨询</button>
+  </div>
+</div>
+
+<div id="tmodal" class="modal" aria-hidden="true">
+  <div class="modal-box" role="dialog" aria-modal="true">
+    <button class="modal-x" aria-label="关闭">×</button>
+    <div class="m-ico" id="t-ico"></div>
+    <h3 id="t-title"></h3>
+    <h4>用途</h4><p id="t-use"></p>
+    <h4>详细说明</h4><ul id="t-list"></ul>
+    <p id="t-note" class="m-note"></p>
+  </div>
+</div>
+
+<audio id="bgm" src="bg.mp3.mp3" loop preload="auto"></audio>
+<button id="music-btn" aria-label="背景音乐开关">🎵</button>
+
+<script src="js/particles.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
