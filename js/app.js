@@ -35,7 +35,7 @@ const projects = [
     scene:"需要同时管理多个工作号或测试号的个人与团队。",
     note:"请遵守相关平台的服务条款，因违规使用产生的后果由使用者自行承担。" },
   { ico:"🐉", title:"Kali Linux",
-    intro:"围绕 Kali Linux 开展网络安全教学，从环境搭建到实战演练，循序渐进。",
+    intro:"围绕 Kali Linux 开展网络安全教学，从环境搭建到实战入狱，循序渐进。",
     list:["Kali 环境安装与常用工具","渗透测试流程与漏洞挖掘思路","安全攻防靶场实战","从入门到入狱的学习路线"],
     scene:"想系统入门网络安全、准备做安全测试或参加 CTF 的学习者。",
     note:"所有教学与练习仅限在自己搭建的靶场或获得授权的环境中进行，严禁攻击未授权目标。" },
@@ -213,7 +213,10 @@ play().catch(() => {
 
 // ===== 点赞功能（每人每天可点一次）=====
 // 👉 想改点赞数，只改下面这个数字，保存上传即可
-const LIKE_BASE = 2285;
+const LIKE_BASE = 2128;
+// 👉 全网统计（Supabase）：把下面两项填好即可；留空则只在本机计数
+const SUPABASE_URL = "https://lxlxpxdzfnothnshfqht.supabase.co";   // 例如 https://xxxx.supabase.co
+const SUPABASE_KEY = "sb_publishable_GQca5ruj4r-uOuP5ciPwGA_5uI0yLrk";   // 填 anon / publishable 公开密钥，绝对不要填 service_role / secret 密钥
 (function () {
   const KEY = "sy_like_v2";
   const btn = document.getElementById("like-btn"), num = document.getElementById("like-num"), tip = document.getElementById("like-tip");
@@ -225,11 +228,22 @@ const LIKE_BASE = 2285;
     if (raw) data = JSON.parse(raw);
     else if (localStorage.getItem("sy_liked_v1") === "1") data = { date: "", total: 1 };   // 兼容旧版本
   } catch (e) {}
+  let serverTotal = null;
+  const useServer = !!(SUPABASE_URL && SUPABASE_KEY);
+  function rpc(name) {
+    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 6000);
+    const headers = { "Content-Type": "application/json", apikey: SUPABASE_KEY };
+    if (SUPABASE_KEY.startsWith("eyJ")) headers.Authorization = "Bearer " + SUPABASE_KEY;
+    return fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/rpc/" + name, { method: "POST", headers, body: "{}", signal: ctl.signal })
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(v => Number(v))
+      .finally(() => clearTimeout(timer));
+  }
   const heart = '<svg viewBox="0 0 24 24" width="SZ" height="SZ"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
   const likedToday = () => data.date === today();
   const show = () => {
     const on = likedToday();
-    num.textContent = (LIKE_BASE + data.total).toLocaleString();
+    num.textContent = (LIKE_BASE + (serverTotal !== null ? serverTotal : data.total)).toLocaleString();
     btn.classList.toggle("liked", on);
     tip.classList.toggle("on", on);
     tip.textContent = on ? "今天已点赞，谢谢支持！" : "点个赞支持一下吧！";
@@ -253,13 +267,16 @@ const LIKE_BASE = 2285;
   btn.addEventListener("click", () => {
     if (likedToday()) {                // 今天点过了：只提示，不再加 1
       btn.classList.remove("shake"); void btn.offsetWidth; btn.classList.add("shake");
-      tip.textContent = "今天已经点过赞啦，明天再来哦！"; return;
+      tip.textContent = "今天已经点赞过啦，明天再来哦！"; return;
     }
     data = { date: today(), total: data.total + 1 };
     try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+    if (serverTotal !== null) serverTotal += 1;          // 先立刻显示 +1
     show();
     btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop");
     effects();
+    if (useServer) rpc("increment_likes").then(v => { serverTotal = v; show(); }).catch(() => {});
   });
   show();
+  if (useServer) rpc("get_likes").then(v => { serverTotal = v; show(); }).catch(() => {});
 })();
