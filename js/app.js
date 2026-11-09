@@ -36,7 +36,7 @@ const projects = [
     note:"请遵守相关平台的服务条款，因违规使用产生的后果由使用者自行承担。" },
   { ico:"🐉", title:"Kali Linux",
     intro:"围绕 Kali Linux 开展网络安全教学，从环境搭建到实战入狱，循序渐进。",
-    list:["Kali 环境安装与常用工具","渗透测试流程与漏洞挖掘思路","安全攻防靶场实战","从入门到入狱的学习路线"],
+    list:["Kali 环境安装与常用工具","渗透测试流程与漏洞挖掘思路","安全攻防靶场实战","从入门到进阶的入狱路线"],
     scene:"想系统入门网络安全、准备做安全测试或参加 CTF 的学习者。",
     note:"所有教学与练习仅限在自己搭建的靶场或获得授权的环境中进行，严禁攻击未授权目标。" },
   { ico:"⚙️", title:"更多定制开发",
@@ -92,7 +92,7 @@ const tools = [
   { use:"常用的关系型数据库，用 SQL 语句存取数据。", list:["存放用户、订单等结构化数据","支持复杂查询、索引和事务","小程序后台和管理系统常用","需要定期备份并设置访问权限"] },
   { use:"腾讯官方的微信小程序开发工具。", list:["编写代码并实时预览效果","真机调试，直接在手机上测试","支持云开发（云函数、云数据库）","一键上传代码，提交审核和发布"] },
   { use:"用来测试和调试 API 接口的工具。", list:["发送各类请求并查看返回结果","把常用接口保存成集合，方便复用","支持环境变量和自动化测试","联调小程序和后端接口时很好用"] },
-  { use:"预装数百种安全工具的 Linux 发行版，面向安全测试与学习。", list:["内置扫描、抓包、密码审计等常用工具","常装在虚拟机或专用设备上使用","是学习网络安全的入狱必备系统","我的 Kali Linux 教学也基于它"], note:"请只在自己的设备、靶场或已获书面授权的环境中使用，严禁攻击未授权目标。" },
+  { use:"预装数百种安全工具的 Linux 发行版，面向安全测试与学习。", list:["内置扫描、抓包、密码审计等常用工具","常装在虚拟机或专用设备上使用","是学习网络安全从入门到入狱的必备系统","我的 Kali Linux 教学也基于它"], note:"请只在自己的设备、靶场或已获书面授权的环境中使用，严禁攻击未授权目标。" },
   { use:"Web 应用安全测试平台，通过代理拦截和修改网页请求。", list:["拦截并查看浏览器与服务器之间的数据","手动修改请求，测试网站是否存在漏洞","内置扫描和重放功能","常用于 Web 安全学习和授权测试"], note:"仅限测试自己的网站或已获授权的目标。" },
   { use:"开源的网络扫描工具。", list:["发现网络中在线的设备","探测开放的端口和运行的服务","识别服务版本，辅助排查安全风险","用于网络资产自查和安全学习"], note:"只扫描自己的网络或已获授权的目标。" },
   { use:"最常用的网络抓包与协议分析工具。", list:["捕获网络中的数据包并逐层解析","过滤并追踪某次连接的完整过程","排查网络卡顿、连接失败等问题","用来学习 TCP、HTTP 等协议原理"], note:"请只抓取自己网络中的流量，注意保护他人隐私。" }
@@ -267,7 +267,7 @@ const SUPABASE_KEY = "sb_publishable_GQca5ruj4r-uOuP5ciPwGA_5uI0yLrk";   // 填 
   btn.addEventListener("click", () => {
     if (likedToday()) {                // 今天点过了：只提示，不再加 1
       btn.classList.remove("shake"); void btn.offsetWidth; btn.classList.add("shake");
-      tip.textContent = "今天已经点赞过啦，明天再来哦！"; return;
+      tip.textContent = "今天已经点过赞啦，明天再来哦！"; return;
     }
     data = { date: today(), total: data.total + 1 };
     try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
@@ -279,4 +279,217 @@ const SUPABASE_KEY = "sb_publishable_GQca5ruj4r-uOuP5ciPwGA_5uI0yLrk";   // 填 
   });
   show();
   if (useServer) rpc("get_likes").then(v => { serverTotal = v; show(); }).catch(() => {});
+})();
+
+
+// ===== 虚拟留言（可以随便改）=====
+// 格式："昵称：内容"（中文冒号）。第 1 条固定最先飘出，其余顺序、数量随意增删。
+// 这些只是写在代码里的装饰留言，和访客真实留的混在一起轮流飘。
+const FAKE_MESSAGES = [
+  "孙思宇：必须占楼",
+  "小李：牛逼牛逼！",
+  "你王哥哥：有点酷 ♥",
+  "alex：这个背景音乐有点舒服了哦",
+  "陈：科技感拉满",
+  "路人：路过打卡",
+  "夜猫子：深夜刷到，被音乐治愈",
+  "你猜：qq空间嘛，",
+  "杰：有感觉",
+  "星辰：这个火花特效是怎么做的？",
+  "Luna：夯爆了",
+  "老张：赞",
+  "你猜嘛：点赞+1，",
+  "monkey：👍🏻👍🏻👍🏻",
+  "我是嫩d：哈哈哈",
+  "晚风：晚安，今天也要加油",
+  "小鱼：弹幕飘上来太好玩了",
+  "Tom：Nice site!",
+  "阿凯：细节满分",
+  "青柠：打卡留名～",
+  "Neo：Kali 笑死了从入门到入狱",
+  "子墨：下次再来",
+  "小野：这音乐适合写代码",
+  "Echo：每天来点个赞",
+  "阿远：挺快的",
+  "麦芽糖：哇，爱心特效好可爱",
+  "Ryan：Clean design, love it",
+  "小北：页面很紧凑，不浪费空间",
+  "南风：手机上看也没问题",
+  "白开水：路过，留个脚印",
+  "Sam：玩了半天特效",
+  "木子：思宇加油！",
+  "大白：看着很专业",
+  "Cindy：喜欢这个蓝色调",
+  "阿宏：小程序那块我想了解下",
+  "飞鱼：留言区好有意思",
+  "Jason：点赞已完成 ✓",
+  "初夏：好安静的音乐",
+  "老K：科技风我可以",
+  "小柒：来了来了",
+  "Zoe：Love the particle effects",
+  "阿辉：滑动的时候有光点，惊喜",
+  "墨墨：打卡第一天",
+  "云朵：配上这音乐，绝了",
+  "Leo：网站做得很用心",
+  "阿泽：今天也是元气满满的一天",
+  "小优：路过，顺手点赞",
+  "Max：这个主页比我的强多了哈哈",
+  "小七：设计巧妙",
+  "夏天：感觉整个人都平静了",
+  "Bob：Keep it up!",
+  "阿宁：很搭",
+  "小满：蹲一个更新",
+  "pixel：细节处理得好",
+  "Eric：Great job",
+  "一一：留言留言～",
+  "山雀：来看看大佬的主页",
+  "小周：点了赞，希望越来越好",
+  "Anna：So cool!",
+  "阿鹏：深夜写代码听这个正合适",
+  "小豆：我也想做个这样的网站",
+  "Henry：Smooth animations",
+  "柚子：爱心飘起来的时候好治愈",
+  "老陈：加油，期待更多项目",
+  "Olivia：Beautiful colors",
+  "阿锋：留个言，混个脸熟",
+  "小鹿：好看好听！",
+  "Alan：今天第一次来，很惊喜",
+  "绵绵：背景音乐叫什么呀",
+  "Jack：Respect!",
+  "小川：页面一点都不卡",
+  "糖糖：刷到就是缘分，打卡",
+  "阿力：技术栈挺全的",
+  "Ivy：Nice vibes",
+  "夜航：愿代码无 bug",
+  "小雨：路过，留下一句加油",
+  "Chris：Awesome page",
+  "阿凯凯：点赞点赞点赞",
+  "梨子：这个蓝色发光好有科技感",
+  "Will：Bookmarked!",
+  "小鱼干：来晚了，沙发被占了",
+  "Daniel：Love the music",
+  "清风：留言墙很有创意",
+  "阿旭：每天打卡 +1",
+  "Lily：Can't stop clicking the sparks",
+  "小桔：好治愈的主页",
+  "老李：支持一下",
+  "Andy：Smart layout",
+  "若水：安静地路过，留下祝福",
+  "阿豪：一看就是用心做的",
+  "Kate：So smooth on my phone",
+  "小宇：祝主页越来越好",
+  "Peter：Cheers!",
+  "星河：这个星空蓝我爱了",
+  "小马：占个楼，下次再来",
+  "Emma：Super cute hearts",
+  "阿杰杰：好玩，再点一次赞",
+  "云端：晚安",
+  "Joe：Thanks for sharing",
+  "小宇宙：祝你一切顺利！"
+];
+
+// ===== 头像左侧：向上飘的留言 =====
+(function () {
+  const strip = document.getElementById("gb-strip");
+  if (!strip) return;
+  const $g = id => document.getElementById(id);
+  const gm = $g("gbmodal"), nameEl = $g("gb-name"), textEl = $g("gb-text"), cntEl = $g("gb-cnt"), sendBtn = $g("gb-send"), msgEl = $g("gb-msg");
+  const useServer = !!(SUPABASE_URL && SUPABASE_KEY);
+  const PALETTE = [["#7ee6ff", "#00d4ff"], ["#ff9cc0", "#ff4d8d"], ["#ffe08a", "#ffd246"], ["#8ff0c0", "#46e696"], ["#c9a8ff", "#a259ff"]];
+  const SPEED = 30, GAP = 12, COOLDOWN = 30000, KEY = "sy_gb_last";
+  let uid = 0, real = [], queue = [], qi = 0, nextAt = 0, visible = true, priority = [];
+  const active = new Set();
+
+  const parse = s => { const i = s.indexOf("："); return i > 0 ? { name: s.slice(0, i), content: s.slice(i + 1) } : { name: "访客", content: s }; };
+  const virtual = FAKE_MESSAGES.map(s => Object.assign(parse(s), { id: ++uid }));
+  function rebuild() {                      // 第 1 条置顶，其余：每 1 条真实留言配 3 条虚拟留言轮流
+    const q = [virtual[0]], rest = virtual.slice(1);
+    let ri = 0, vi = 0;
+    while (ri < real.length || vi < rest.length) {
+      if (ri < real.length) q.push(real[ri++]);
+      for (let k = 0; k < 3 && vi < rest.length; k++) q.push(rest[vi++]);
+    }
+    queue = q; if (qi >= queue.length) qi = 0;
+  }
+  rebuild();
+
+  function rpc(name, args) {
+    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 8000);
+    const headers = { "Content-Type": "application/json", apikey: SUPABASE_KEY };
+    if (SUPABASE_KEY.startsWith("eyJ")) headers.Authorization = "Bearer " + SUPABASE_KEY;
+    return fetch(SUPABASE_URL.replace(/\/$/, "") + "/rest/v1/rpc/" + name, { method: "POST", headers, body: JSON.stringify(args || {}), signal: ctl.signal })
+      .then(r => r.json().catch(() => null).then(j => { if (!r.ok) throw new Error((j && j.message) || r.status); return j; }))
+      .finally(() => clearTimeout(timer));
+  }
+  const clean = s => s.replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim();
+  const say = (t, ok) => { msgEl.textContent = t; msgEl.className = "gb-msg" + (ok ? " ok" : ""); };
+
+  function spawn(m, mine) {
+    const now = performance.now();
+    if (now < nextAt) return false;
+    const col = PALETTE[m.id % PALETTE.length], el = document.createElement("span");
+    el.className = "gb-m" + (mine ? " mine" : "");
+    el.textContent = m.name + "：" + m.content;                 // textContent：留言里的代码不会被执行
+    el.style.left = Math.round(Math.random() * 8) + "px";
+    el.style.color = col[0]; el.style.borderColor = col[1];
+    el.style.boxShadow = "0 0 " + (mine ? 16 : 8) + "px " + col[1] + "88";
+    strip.appendChild(el);
+    const h = el.offsetHeight, dist = strip.clientHeight + h;
+    el.style.setProperty("--dist", dist + "px");
+    el.style.animationDuration = dist / SPEED + "s";
+    nextAt = now + (h + GAP) / SPEED * 1000;                    // 前一条上移够远，下一条才出来，避免重叠
+    active.add(m.id);
+    el.addEventListener("animationend", () => { el.remove(); active.delete(m.id); });
+    return true;
+  }
+  setInterval(() => {
+    if (!visible || document.hidden) return;
+    if (priority.length) { if (spawn(priority[0], true)) priority.shift(); return; }
+    for (let k = 0; k < queue.length; k++) {
+      const m = queue[(qi + k) % queue.length];
+      if (active.has(m.id)) continue;
+      if (spawn(m, false)) qi = (qi + k + 1) % queue.length;
+      return;
+    }
+  }, 300);
+  if ("IntersectionObserver" in window) new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(strip);
+
+  // 写留言弹窗
+  $g("gb-open").addEventListener("click", () => {
+    gm.classList.add("open"); gm.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden";
+    say("发送后你的留言会飘上屏幕 · 每 30 秒可发一条");
+    setTimeout(() => textEl.focus(), 250);
+  });
+  document.querySelector(".gb-cancel").addEventListener("click", closeModal);
+  textEl.addEventListener("input", () => { cntEl.textContent = textEl.value.length; });
+  textEl.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
+  sendBtn.addEventListener("click", send);
+
+  async function send() {
+    if (!useServer) return say("留言功能暂未开启");
+    const content = clean(textEl.value).slice(0, 40), name = clean(nameEl.value).slice(0, 12) || "匿名访客";
+    if (!content) return say("先写点什么吧～");
+    let last = 0; try { last = +localStorage.getItem(KEY) || 0; } catch (e) {}
+    const wait = COOLDOWN - (Date.now() - last);
+    if (wait > 0) return say("发太快啦，请 " + Math.ceil(wait / 1000) + " 秒后再试");
+    sendBtn.disabled = true;
+    try {
+      await rpc("post_message", { p_name: name, p_content: content });
+      try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {}
+      const m = { id: ++uid, name, content };
+      real.unshift(m); rebuild();
+      priority.push(m);                                           // 自己的留言优先飘出
+      textEl.value = ""; cntEl.textContent = "0";
+      closeModal();
+    } catch (e) {
+      say(String(e.message) === "busy" ? "留言太多啦，稍后再来～" : "发送失败，请稍后再试");
+    }
+    sendBtn.disabled = false;
+  }
+
+  if (useServer) rpc("get_messages", { p_limit: 80 }).then(rows => {
+    real = (rows || []).map(r => ({ id: ++uid, name: r.name, content: r.content }));
+    rebuild();
+    if (qi <= 2) qi = 1;                                          // 刚进页面时，让真实留言尽快飘出来
+  }).catch(() => {});
 })();
