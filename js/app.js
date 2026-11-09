@@ -213,7 +213,7 @@ play().catch(() => {
 
 // ===== 点赞功能（每人每天可点一次）=====
 // 👉 想改点赞数，只改下面这个数字，保存上传即可
-const LIKE_BASE = 2128;
+const LIKE_BASE = 2538;
 // 👉 全网统计（Supabase）：把下面两项填好即可；留空则只在本机计数
 const SUPABASE_URL = "https://lxlxpxdzfnothnshfqht.supabase.co";   // 例如 https://xxxx.supabase.co
 const SUPABASE_KEY = "sb_publishable_GQca5ruj4r-uOuP5ciPwGA_5uI0yLrk";   // 填 anon / publishable 公开密钥，绝对不要填 service_role / secret 密钥
