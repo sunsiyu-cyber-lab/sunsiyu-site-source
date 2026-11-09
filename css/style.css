@@ -132,3 +132,22 @@ nav{padding:10px 14px}nav ul{gap:12px}nav a{font-size:13px}.nav-btn{padding:7px 
 @keyframes pup{0%{opacity:0;transform:translate(-50%,-30%)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-260%)}}
 @keyframes lring{to{width:120px;height:120px;opacity:0}}
 @media(max-width:600px){.like-box{margin-left:30px;width:80px}.like-btn{padding:7px 11px;font-size:14px}.like-tip{font-size:11px}}
+
+/* 头像左侧：向上飘的留言 */
+.gb-box{position:absolute;right:100%;top:50%;transform:translateY(-50%);margin-right:34px;width:96px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.gb-strip{position:relative;width:100%;height:150px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent)}
+.gb-m{position:absolute;left:0;top:100%;max-width:calc(100% - 8px);font-size:12px;line-height:1.4;padding:3px 9px;border-radius:12px;background:rgba(2,6,18,.6);border:1px solid;pointer-events:none;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;animation:gbup linear forwards}
+.gb-m.mine{font-weight:bold}
+@keyframes gbup{to{transform:translateY(calc(-1 * var(--dist)))}}
+.gb-in{display:block;width:100%;margin-bottom:10px;background:rgba(30,140,255,.08);border:1px solid rgba(30,140,255,.45);border-radius:8px;padding:10px 12px;color:#eaf6ff;font-size:16px;line-height:1.5;font-family:inherit;outline:0;resize:none}
+.gb-in:focus{border-color:#2eaaff;box-shadow:0 0 12px rgba(46,170,255,.45)}
+.gb-cnt{text-align:right;font-size:12px;color:#7f93b8;margin:-4px 2px 10px}
+.gb-btns{display:flex;gap:10px}
+.gb-btns button{flex:1;margin:0;padding:12px;border-radius:8px;font-size:15px;cursor:pointer}
+.gb-cancel{background:none;border:1px solid rgba(30,140,255,.45);color:#9fb3d6}
+.gb-btns .m-cta{margin-top:0}
+.gb-btns button:disabled{opacity:.5}
+.gb-msg{margin-top:10px;text-align:center;font-size:12px;color:#8aa0c8;min-height:18px}
+.gb-msg.ok{color:#7ee6ff}
+@media(min-width:700px){.gb-box{width:190px}.gb-strip{height:190px}.gb-m{font-size:13px}}
+@media(max-width:600px){.gb-box{margin-right:30px;width:80px}}
