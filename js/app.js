@@ -36,7 +36,7 @@ const projects = [
     note:"请遵守相关平台的服务条款，因违规使用产生的后果由使用者自行承担。" },
   { ico:"🐉", title:"Kali Linux",
     intro:"围绕 Kali Linux 开展网络安全教学，从环境搭建到实战入狱，循序渐进。",
-    list:["Kali 环境安装与常用工具","渗透测试流程与漏洞挖掘思路","安全攻防靶场实战","从入门到进阶的入狱路线"],
+    list:["Kali 环境安装与常用工具","渗透测试流程与漏洞挖掘思路","安全攻防靶场实战","从入门到进阶的学习路线"],
     scene:"想系统入门网络安全、准备做安全测试或参加 CTF 的学习者。",
     note:"所有教学与练习仅限在自己搭建的靶场或获得授权的环境中进行，严禁攻击未授权目标。" },
   { ico:"⚙️", title:"更多定制开发",
@@ -92,7 +92,7 @@ const tools = [
   { use:"常用的关系型数据库，用 SQL 语句存取数据。", list:["存放用户、订单等结构化数据","支持复杂查询、索引和事务","小程序后台和管理系统常用","需要定期备份并设置访问权限"] },
   { use:"腾讯官方的微信小程序开发工具。", list:["编写代码并实时预览效果","真机调试，直接在手机上测试","支持云开发（云函数、云数据库）","一键上传代码，提交审核和发布"] },
   { use:"用来测试和调试 API 接口的工具。", list:["发送各类请求并查看返回结果","把常用接口保存成集合，方便复用","支持环境变量和自动化测试","联调小程序和后端接口时很好用"] },
-  { use:"预装数百种安全工具的 Linux 发行版，面向安全测试与学习。", list:["内置扫描、抓包、密码审计等常用工具","常装在虚拟机或专用设备上使用","是学习网络安全从入门到入狱的必备系统","我的 Kali Linux 教学也基于它"], note:"请只在自己的设备、靶场或已获书面授权的环境中使用，严禁攻击未授权目标。" },
+  { use:"预装数百种安全工具的 Linux 发行版，面向安全测试与学习。", list:["内置扫描、抓包、密码审计等常用工具","常装在虚拟机或专用设备上使用","是学习网络安全的从入门到入狱必备系统","我的 Kali Linux 教学也基于它"], note:"请只在自己的设备、靶场或已获书面授权的环境中使用，严禁攻击未授权目标。" },
   { use:"Web 应用安全测试平台，通过代理拦截和修改网页请求。", list:["拦截并查看浏览器与服务器之间的数据","手动修改请求，测试网站是否存在漏洞","内置扫描和重放功能","常用于 Web 安全学习和授权测试"], note:"仅限测试自己的网站或已获授权的目标。" },
   { use:"开源的网络扫描工具。", list:["发现网络中在线的设备","探测开放的端口和运行的服务","识别服务版本，辅助排查安全风险","用于网络资产自查和安全学习"], note:"只扫描自己的网络或已获授权的目标。" },
   { use:"最常用的网络抓包与协议分析工具。", list:["捕获网络中的数据包并逐层解析","过滤并追踪某次连接的完整过程","排查网络卡顿、连接失败等问题","用来学习 TCP、HTTP 等协议原理"], note:"请只抓取自己网络中的流量，注意保护他人隐私。" }
@@ -286,15 +286,15 @@ const SUPABASE_KEY = "sb_publishable_GQca5ruj4r-uOuP5ciPwGA_5uI0yLrk";   // 填 
 // 格式："昵称：内容"（中文冒号）。第 1 条固定最先飘出，其余顺序、数量随意增删。
 // 这些只是写在代码里的装饰留言，和访客真实留的混在一起轮流飘。
 const FAKE_MESSAGES = [
-  "孙思宇：必须占楼",
-  "小李：牛逼牛逼！",
+  "孙思宇：必须占楼，你们快跟上",
+  "小李：卧槽我这手速 牛逼牛逼！",
   "你王哥哥：有点酷 ♥",
   "alex：这个背景音乐有点舒服了哦",
   "陈：科技感拉满",
   "路人：路过打卡",
   "夜猫子：深夜刷到，被音乐治愈",
   "你猜：qq空间嘛，",
-  "杰：有感觉",
+  "杰：从入门到入狱哈哈",
   "星辰：这个火花特效是怎么做的？",
   "Luna：夯爆了",
   "老张：赞",
@@ -329,15 +329,15 @@ const FAKE_MESSAGES = [
   "Zoe：Love the particle effects",
   "阿辉：滑动的时候有光点，惊喜",
   "墨墨：打卡第一天",
-  "云朵：配上这音乐，绝了",
+  "云朵：配上这音乐，困了",
   "Leo：网站做得很用心",
   "阿泽：今天也是元气满满的一天",
   "小优：路过，顺手点赞",
   "Max：这个主页比我的强多了哈哈",
-  "小七：设计巧妙",
+  "小七：弹幕往上飘，设计巧妙",
   "夏天：感觉整个人都平静了",
   "Bob：Keep it up!",
-  "阿宁：很搭",
+  "阿宁：头像和主题很搭",
   "小满：蹲一个更新",
   "pixel：细节处理得好",
   "Eric：Great job",
@@ -383,7 +383,7 @@ const FAKE_MESSAGES = [
   "小马：占个楼，下次再来",
   "Emma：Super cute hearts",
   "阿杰杰：好玩，再点一次赞",
-  "云端：晚安",
+  "云端：夜深了，晚安",
   "Joe：Thanks for sharing",
   "小宇宙：祝你一切顺利！"
 ];
@@ -396,7 +396,7 @@ const FAKE_MESSAGES = [
   const gm = $g("gbmodal"), nameEl = $g("gb-name"), textEl = $g("gb-text"), cntEl = $g("gb-cnt"), sendBtn = $g("gb-send"), msgEl = $g("gb-msg");
   const useServer = !!(SUPABASE_URL && SUPABASE_KEY);
   const PALETTE = [["#7ee6ff", "#00d4ff"], ["#ff9cc0", "#ff4d8d"], ["#ffe08a", "#ffd246"], ["#8ff0c0", "#46e696"], ["#c9a8ff", "#a259ff"]];
-  const SPEED = 30, GAP = 12, COOLDOWN = 30000, KEY = "sy_gb_last";
+  const SPEED = 34, GAP = 8, COOLDOWN = 30000, KEY = "sy_gb_last";
   let uid = 0, real = [], queue = [], qi = 0, nextAt = 0, visible = true, priority = [];
   const active = new Set();
 
@@ -430,11 +430,11 @@ const FAKE_MESSAGES = [
     const col = PALETTE[m.id % PALETTE.length], el = document.createElement("span");
     el.className = "gb-m" + (mine ? " mine" : "");
     el.textContent = m.name + "：" + m.content;                 // textContent：留言里的代码不会被执行
-    el.style.left = Math.round(Math.random() * 8) + "px";
     el.style.color = col[0]; el.style.borderColor = col[1];
     el.style.boxShadow = "0 0 " + (mine ? 16 : 8) + "px " + col[1] + "88";
     strip.appendChild(el);
-    const h = el.offsetHeight, dist = strip.clientHeight + h;
+    const w = el.offsetWidth, h = el.offsetHeight, dist = strip.clientHeight + h;
+    el.style.left = Math.round(Math.random() * Math.max(0, (strip.clientWidth - w - 6) * 0.85)) + "px";   // 横向随机，飘过整个区域
     el.style.setProperty("--dist", dist + "px");
     el.style.animationDuration = dist / SPEED + "s";
     nextAt = now + (h + GAP) / SPEED * 1000;                    // 前一条上移够远，下一条才出来，避免重叠
