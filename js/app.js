@@ -209,3 +209,57 @@ play().catch(() => {
   document.addEventListener("mousedown", e => { if (Date.now() - lastTouch > 800) add(e.clientX, e.clientY, 26, true); }, opt);
   document.addEventListener("mousemove", e => { if (Date.now() - lastTouch > 800) add(e.clientX, e.clientY, 3, false); }, opt);
 })();
+
+
+// ===== 点赞功能（每人每天可点一次）=====
+// 👉 想改点赞数，只改下面这个数字，保存上传即可
+const LIKE_BASE = 2285;
+(function () {
+  const KEY = "sy_like_v2";
+  const btn = document.getElementById("like-btn"), num = document.getElementById("like-num"), tip = document.getElementById("like-tip");
+  if (!btn) return;
+  const today = () => { const d = new Date(), p = n => String(n).padStart(2, "0"); return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()); };
+  let data = { date: "", total: 0 };          // date：最近一次点赞的日期；total：这个浏览器累计点了几次
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) data = JSON.parse(raw);
+    else if (localStorage.getItem("sy_liked_v1") === "1") data = { date: "", total: 1 };   // 兼容旧版本
+  } catch (e) {}
+  const heart = '<svg viewBox="0 0 24 24" width="SZ" height="SZ"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+  const likedToday = () => data.date === today();
+  const show = () => {
+    const on = likedToday();
+    num.textContent = (LIKE_BASE + data.total).toLocaleString();
+    btn.classList.toggle("liked", on);
+    tip.classList.toggle("on", on);
+    tip.textContent = on ? "今天已点赞，谢谢支持！" : "点个赞支持一下吧！";
+  };
+  function effects() {
+    const r = btn.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const add = (el, ms) => { document.body.appendChild(el); setTimeout(() => el.remove(), ms); };
+    const ring = document.createElement("div"); ring.className = "fx-ring"; ring.style.left = cx + "px"; ring.style.top = cy + "px"; add(ring, 900);
+    const plus = document.createElement("div"); plus.className = "fx-plus"; plus.textContent = "+1"; plus.style.left = cx + "px"; plus.style.top = cy + "px"; add(plus, 1300);
+    for (let i = 0; i < 12; i++) {
+      const h = document.createElement("div"), sz = 12 + Math.random() * 14;
+      h.className = "fx-heart"; h.innerHTML = heart.replace(/SZ/g, sz | 0);
+      h.style.left = cx + "px"; h.style.top = cy + "px";
+      h.style.setProperty("--dx", (Math.random() - 0.5) * 150 + "px");
+      h.style.setProperty("--dy", 50 + Math.random() * 110 + "px");
+      h.style.setProperty("--r", (Math.random() - 0.5) * 60 + "deg");
+      h.style.animationDelay = Math.random() * 0.2 + "s";
+      add(h, 1500);
+    }
+  }
+  btn.addEventListener("click", () => {
+    if (likedToday()) {                // 今天点过了：只提示，不再加 1
+      btn.classList.remove("shake"); void btn.offsetWidth; btn.classList.add("shake");
+      tip.textContent = "今天已经点过赞啦，明天再来哦！"; return;
+    }
+    data = { date: today(), total: data.total + 1 };
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+    show();
+    btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop");
+    effects();
+  });
+  show();
+})();
