@@ -158,7 +158,7 @@ nav{padding:10px 14px}nav ul{gap:12px}nav a{font-size:13px}.nav-btn{padding:7px 
 .helix-stage{position:sticky;top:0;height:100vh;overflow:hidden;perspective:1300px}
 .helix{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
 /* 中间的发光圆柱体 */
-.beam{position:absolute;left:50%;top:50%;width:72px;height:150vh;margin:-75vh 0 0 -36px;border-radius:50%;background:linear-gradient(180deg,transparent,rgba(0,212,255,.18) 18%,rgba(0,212,255,.55) 50%,rgba(0,212,255,.18) 82%,transparent);box-shadow:0 0 60px 12px rgba(0,150,255,.35),0 0 120px 30px rgba(0,150,255,.15);transform:translateZ(-30px)}
+.beam{position:absolute;left:50%;top:50%;width:72px;height:200vh;margin:-100vh 0 0 -36px;border-radius:50%;background:linear-gradient(180deg,transparent,rgba(0,212,255,.18) 18%,rgba(0,212,255,.55) 50%,rgba(0,212,255,.18) 82%,transparent);box-shadow:0 0 60px 12px rgba(0,150,255,.35),0 0 120px 30px rgba(0,150,255,.15);transform:translateZ(-30px)}
 /* 螺旋里的卡片：位置由 JS 每帧算出，只做发光过渡，不过渡位移 */
 .helix .card{position:absolute;left:0;top:0;width:300px;margin:-110px 0 0 -150px;backface-visibility:hidden;transition:box-shadow .3s,border-color .3s;will-change:transform,opacity}
 /* 转到正面的卡片：瞬间发光 */
