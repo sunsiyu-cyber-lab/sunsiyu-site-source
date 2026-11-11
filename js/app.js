@@ -1,8 +1,27 @@
 // 联系我按钮：复制页面上显示的微信号
+// 不用系统 alert（手机浏览器里经常弹不出来），改成页面里的提示条
 function copyWechat() {
   const num = document.getElementById("wechat").textContent.trim();
-  if (navigator.clipboard) navigator.clipboard.writeText(num);
-  alert("微信号已复制：" + num);
+  const done = () => showToast("微信号已复制：" + num);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(num).then(done).catch(() => { fallbackCopy(num); done(); });
+  } else { fallbackCopy(num); done(); }
+}
+function fallbackCopy(text) {
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    document.execCommand("copy"); ta.remove();
+  } catch (e) {}
+}
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById("copy-toast");
+  if (!t) { alert(msg); return; }
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
 }
 
 // ===== 项目详情弹窗 =====
@@ -48,7 +67,6 @@ const projects = [
 const modal = document.getElementById("modal");
 const $ = id => document.getElementById(id);
 function openModal(i) {
-  blip(660, 990, 0.16, 0.08);
   const p = projects[i];
   $("m-ico").textContent = p.ico;
   $("m-title").textContent = p.title;
@@ -100,7 +118,6 @@ const tools = [
 ];
 const tmodal = $("tmodal");
 function openTool(el) {
-  blip(660, 990, 0.16, 0.08);
   const t = tools[+el.dataset.t];
   $("t-ico").innerHTML = el.querySelector("b").outerHTML;
   $("t-title").textContent = el.textContent.trim();
@@ -497,44 +514,15 @@ const FAKE_MESSAGES = [
 })();
 
 
-// ===== 提示音（科技感 blip，Web Audio 合成，无需音频文件） =====
-// 注意：浏览器规定音频必须等用户先点一下页面才能出声，所以提示音
-// 在第一次点击/触摸页面后才开始响；右下角 🔔 按钮可以开关提示音。
-let sfxCtx = null, sfxOn = true;
-function sfxCtxGet() {
-  if (!sfxCtx) sfxCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (sfxCtx.state === "suspended") sfxCtx.resume();
-  return sfxCtx;
-}
-function blip(f1, f2, dur, vol) {
-  if (!sfxOn) return;
-  try {
-    const ctx = sfxCtxGet(), t = ctx.currentTime, d = dur || 0.14;
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type = "sine";
-    o.frequency.setValueAtTime(f1, t);
-    o.frequency.exponentialRampToValueAtTime(f2, t + d);
-    g.gain.setValueAtTime(vol || 0.06, t);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + d);
-    o.connect(g); g.connect(ctx.destination);
-    o.start(t); o.stop(t + d + 0.03);
-  } catch (e) {}
-}
-["pointerdown", "keydown", "touchstart"].forEach(t =>
-  document.addEventListener(t, function unlock() { try { sfxCtxGet(); } catch (e) {} document.removeEventListener(t, unlock); }, { passive: true }));
-const sfxBtn = document.getElementById("sfx-btn");
-if (sfxBtn) sfxBtn.addEventListener("click", e => {
-  e.stopPropagation();
-  sfxOn = !sfxOn;
-  sfxBtn.textContent = sfxOn ? "🔔" : "🔕";
-  sfxBtn.classList.toggle("off", !sfxOn);
-  if (sfxOn) blip(880, 1320, 0.12, 0.06);
-});
+// 提示音已移除：右下角铃铛按钮取消，卡片转到正面 / 点开时不再出声。
 
-// ===== 螺旋圆柱：卡片围着中间圆柱，滚动时依次转到正面 =====
+// ===== 螺旋圆柱：卡片围着彩色线，滚动时依次转到正面 =====
 // 原理：每张卡片固定一个基础角度，滚动进度决定圆柱整体旋转角度；
 // 卡片的高度由它当前角度决定，角度越靠近正面越居中，
 // 转到背面的卡片渐隐（配合 backface-visibility 不会看到反面文字）。
+// 每张卡片一种颜色；一块画布跟在卡片后面画彩色连线 + 彩色粒子，
+// 转到正面或滑动时放冲击波。
+const HELIX_COLORS = ["#00d4ff", "#ff4d8d", "#a259ff", "#46e696", "#ffd246", "#ff6c37", "#2e7bff", "#ff5c5c"];
 function initHelix(wrapId, helixId, cardSel, perCardVh) {
   const wrap = document.getElementById(wrapId);
   const helix = document.getElementById(helixId);
@@ -544,15 +532,127 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
   if (!N) return null;
   const step = 360 / N;
   wrap.style.height = (N * (perCardVh || 70)) + "vh";
-  let R = 320, V = 1000, zoom = 1, frontIdx = -1, firstRun = true;
+  // 每张卡片一种颜色
+  cards.forEach((c, i) => c.style.setProperty("--ac", HELIX_COLORS[i % HELIX_COLORS.length]));
+  let R = 320, V = 1000, frontIdx = -1, firstRun = true, lastP = 0;
   function measure() {
     const w = window.innerWidth;
-    R = (w < 600 ? 175 : Math.min(w * 0.30, 320)) * zoom;
-    // 卡片上下分开：相邻两张卡片的垂直间距约一张卡片高（250px），
-    // 像龙盘柱一样一圈一圈绕上去，不再压在一起
-    const spacing = w < 600 ? 220 : 250;
+    R = w < 600 ? 175 : Math.min(w * 0.30, 320);
+    // 无缝连接：先恢复自然高度，量出同一条链里最高的卡片，
+    // 再把所有卡片拉成等高，间距设成卡片高（留 3px 重叠压住发丝缝），
+    // 相邻两块上下贴住，像一条链子绕在柱子上
+    cards.forEach(c => { c.style.height = ""; c.style.marginTop = ""; });
+    let maxH = 0;
+    cards.forEach(c => { maxH = Math.max(maxH, c.offsetHeight); });
+    let spacing;
+    if (maxH > 50) {
+      cards.forEach(c => { c.style.height = maxH + "px"; c.style.marginTop = (-maxH / 2) + "px"; });
+      spacing = maxH - 3;
+    } else {
+      spacing = w < 600 ? 220 : 250;
+    }
     V = (N * spacing) / 2;
   }
+
+  // ---------- 彩色连线 + 粒子 + 冲击波（画布，跟在卡片后面） ----------
+  const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const stage = wrap.querySelector(".helix-stage");
+  let fx = null;
+  if (!reduceMotion && stage) {
+    const cv = document.createElement("canvas");
+    cv.className = "helix-fx";
+    stage.insertBefore(cv, helix);
+    const ctx = cv.getContext("2d");
+    const dpr = window.devicePixelRatio || 1;
+    let W = 0, H = 0, parts = [], rings = [];
+    function resize() {
+      W = stage.clientWidth; H = stage.clientHeight;
+      cv.width = Math.max(1, W * dpr); cv.height = Math.max(1, H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener("resize", resize);
+    const pick = () => HELIX_COLORS[(Math.random() * HELIX_COLORS.length) | 0];
+    function center(el) {
+      const s = stage.getBoundingClientRect(), r = el.getBoundingClientRect();
+      return { x: r.left + r.width / 2 - s.left, y: r.top + r.height / 2 - s.top };
+    }
+    function burst(x, y, n, speed) {
+      for (let i = 0; i < n; i++) {
+        const a = Math.random() * 6.283, v = (0.4 + Math.random() * 0.6) * speed;
+        parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, t: 0, l: 500 + Math.random() * 700, s: 1.5 + Math.random() * 2.5, c: pick() });
+      }
+      if (parts.length > 260) parts.splice(0, parts.length - 260);
+    }
+    function ring(x, y) { rings.push({ x, y, r: 12, max: 190, t: 0, l: 650 }); if (rings.length > 6) rings.shift(); }
+    function linePts() {
+      const pts = [];
+      cards.forEach(c => { if (parseFloat(c.style.opacity || "1") > 0.08) pts.push(center(c)); });
+      pts.sort((a, b) => a.y - b.y);
+      return pts;
+    }
+    function smooth(ctx, pts) {
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 0; i < pts.length - 1; i++) {
+        const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+        ctx.bezierCurveTo(p1.x + (p2.x - p0.x) / 6, p1.y + (p2.y - p0.y) / 6, p2.x - (p3.x - p1.x) / 6, p2.y - (p3.y - p1.y) / 6, p2.x, p2.y);
+      }
+    }
+    let lastT = performance.now();
+    function frame(now) {
+      const dt = Math.min(50, now - lastT); lastT = now;
+      const rect = wrap.getBoundingClientRect();
+      if (rect.bottom > 0 && rect.top < window.innerHeight) {
+        ctx.clearRect(0, 0, W, H);
+        const pts = linePts();
+        // 彩色连线：穿过所有可见卡片中心
+        if (pts.length > 1) {
+          const ys = pts.map(p => p.y), minY = Math.min.apply(null, ys), maxY = Math.max.apply(null, ys);
+          const g = ctx.createLinearGradient(0, minY, 0, Math.max(maxY, minY + 1));
+          g.addColorStop(0, "#a259ff"); g.addColorStop(0.25, "#ff4d8d"); g.addColorStop(0.5, "#00d4ff"); g.addColorStop(0.75, "#2e7bff"); g.addColorStop(1, "#46e696");
+          ctx.globalCompositeOperation = "source-over";
+          ctx.lineCap = "round"; ctx.lineJoin = "round";
+          ctx.strokeStyle = g; ctx.globalAlpha = 0.16; ctx.lineWidth = 20; ctx.shadowBlur = 0;
+          smooth(ctx, pts); ctx.stroke();
+          ctx.globalAlpha = 1; ctx.lineWidth = 7; ctx.shadowColor = "rgba(160,110,255,.85)"; ctx.shadowBlur = 18;
+          smooth(ctx, pts); ctx.stroke();
+          ctx.shadowBlur = 0;
+          // 线旁边的彩色粒子：沿着线随机飘
+          for (let k = 0; k < 2; k++) {
+            const p = pts[(Math.random() * pts.length) | 0];
+            parts.push({ x: p.x + (Math.random() - 0.5) * 90, y: p.y + (Math.random() - 0.5) * 90, vx: (Math.random() - 0.5) * 0.5, vy: -0.2 - Math.random() * 0.5, t: 0, l: 1200 + Math.random() * 1000, s: 1 + Math.random() * 2, c: pick() });
+          }
+        }
+        // 冲击波圆环
+        rings = rings.filter(r => (r.t += dt) < r.l);
+        rings.forEach(r => {
+          const k = r.t / r.l, rad = r.r + (r.max - r.r) * (1 - Math.pow(1 - k, 2));
+          ctx.globalCompositeOperation = "lighter";
+          ctx.globalAlpha = (1 - k) * 0.8;
+          ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
+          ctx.shadowColor = "#a259ff"; ctx.shadowBlur = 20;
+          ctx.beginPath(); ctx.arc(r.x, r.y, rad, 0, 6.283); ctx.stroke();
+        });
+        // 粒子
+        ctx.globalCompositeOperation = "lighter";
+        parts = parts.filter(p => (p.t += dt) < p.l);
+        parts.forEach(p => {
+          const k = 1 - p.t / p.l;
+          p.x += p.vx * dt / 16; p.y += p.vy * dt / 16; p.vx *= 0.985; p.vy *= 0.985;
+          ctx.globalAlpha = k; ctx.shadowColor = p.c; ctx.shadowBlur = 12; ctx.fillStyle = p.c;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, 6.283); ctx.fill();
+        });
+        ctx.globalAlpha = 1; ctx.shadowBlur = 0; ctx.globalCompositeOperation = "source-over";
+      } else {
+        ctx.clearRect(0, 0, W, H);
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    fx = { burst, ring, center };
+  }
+
   function update() {
     const rect = wrap.getBoundingClientRect();
     const total = Math.max(1, rect.height - window.innerHeight);
@@ -575,9 +675,22 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
       if (frontIdx >= 0) cards[frontIdx].classList.remove("front");
       frontIdx = best;
       cards[frontIdx].classList.add("front");
-      const r = wrap.getBoundingClientRect();
-      if (!firstRun && r.top < window.innerHeight && r.bottom > 0) blip(880, 1320, 0.12, 0.05);
+      // 转到正面：冲击波 + 粒子爆开（标题方块不要冲击波）
+      if (fx && !firstRun && !cards[frontIdx].classList.contains("title-card")) {
+        const c = fx.center(cards[frontIdx]);
+        fx.ring(c.x, c.y);
+        fx.burst(c.x, c.y, 26, 3.2);
+      }
     }
+    // 滑动时：按滑动幅度在正面卡片周围放粒子，像冲击波一样散开（标题方块不要）
+    if (fx && !firstRun && frontIdx >= 0 && !cards[frontIdx].classList.contains("title-card")) {
+      const dp = Math.abs(p - lastP);
+      if (dp > 0.001) {
+        const c = fx.center(cards[frontIdx]);
+        fx.burst(c.x, c.y, Math.min(5, Math.round(dp * 900)), 2.2);
+      }
+    }
+    lastP = p;
     firstRun = false;
   }
   let ticking = false;
@@ -588,20 +701,15 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
   }
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", () => { measure(); update(); });
-  const zi = wrap.querySelector(".zoom-in"), zo = wrap.querySelector(".zoom-out");
-  function setZoom(z) { zoom = Math.min(1.6, Math.max(0.6, z)); measure(); update(); }
-  if (zi) zi.addEventListener("click", e => { e.stopPropagation(); setZoom(zoom + 0.15); blip(700, 1050, 0.1, 0.05); });
-  if (zo) zo.addEventListener("click", e => { e.stopPropagation(); setZoom(zoom - 0.15); blip(700, 1050, 0.1, 0.05); });
   measure();
   update();
-  return { setZoom };
+  return null;
 }
 initHelix("helix-projects-wrap", "helix-projects", ".card[data-i]", 70);
 initHelix("helix-tools-wrap", "helix-tools", ".tool-card", 55);
 
 // ===== 工具卡片点击（螺旋版）：点开工具介绍弹窗 =====
 function openToolCard(el) {
-  blip(660, 990, 0.16, 0.08);
   const t = tools[+el.dataset.t];
   const b = el.querySelector("b");
   $("t-ico").innerHTML = b ? b.outerHTML : "";
@@ -615,6 +723,7 @@ function openToolCard(el) {
   document.body.style.overflow = "hidden";
 }
 document.querySelectorAll(".tool-card").forEach(el => {
+  if (el.classList.contains("title-card")) return;   // 标题方块点不开弹窗
   el.addEventListener("click", e => {
     const r = el.getBoundingClientRect(), d = document.createElement("span");
     d.className = "ripple";
@@ -627,3 +736,89 @@ document.querySelectorAll(".tool-card").forEach(el => {
   });
   el.addEventListener("keydown", e => { if (e.key === "Enter") openToolCard(el); });
 });
+
+// ===== Active Theory 风格特效：惯性平滑滚动 + 自定义光标 + 入场动画 + 横向滚动条 =====
+document.documentElement.classList.add("js");
+
+// --- 惯性平滑滚动（仅桌面鼠标滚轮；触屏保持原生手感） ---
+(function () {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (matchMedia("(hover: none), (pointer: coarse)").matches) return;
+  let target = window.scrollY, current = window.scrollY, raf = null;
+  function tick() {
+    const diff = target - current;
+    if (Math.abs(diff) < 0.5) { current = target; raf = null; }
+    else { current += diff * 0.12; raf = requestAnimationFrame(tick); }
+    window.scrollTo({ top: current, behavior: "instant" });
+  }
+  // 键盘 / 锚点等原生滚动时，把目标同步到实际位置
+  window.addEventListener("scroll", () => { if (raf === null) { target = current = window.scrollY; } }, { passive: true });
+  window.addEventListener("wheel", e => {
+    if (e.ctrlKey || e.metaKey) return;                    // 允许 Ctrl+滚轮缩放页面
+    if (document.querySelector(".modal.open")) return;     // 弹窗打开时不抢滚动
+    const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    target = Math.max(0, Math.min(max, target + e.deltaY));
+    if (raf === null) { current = window.scrollY; raf = requestAnimationFrame(tick); }
+    e.preventDefault();
+  }, { passive: false });
+})();
+
+// --- 自定义光标：小圆点跟手，圆环延迟跟随，悬停可点元素时放大 ---
+(function () {
+  if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  const dot = document.getElementById("cursor-dot"), ring = document.getElementById("cursor-ring");
+  if (!dot || !ring) return;
+  document.documentElement.classList.add("has-cursor");
+  let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my;
+  document.addEventListener("mousemove", e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.transform = "translate(" + mx + "px," + my + "px) translate(-50%,-50%)";
+    dot.style.opacity = 1; ring.style.opacity = 1;
+  }, { passive: true });
+  document.addEventListener("mouseout", e => {
+    if (!e.relatedTarget) { dot.style.opacity = 0; ring.style.opacity = 0; }
+  });
+  (function loop() {
+    rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16;
+    ring.style.transform = "translate(" + rx + "px," + ry + "px) translate(-50%,-50%)";
+    requestAnimationFrame(loop);
+  })();
+  document.addEventListener("mouseover", e => {
+    ring.classList.toggle("hot", !!e.target.closest("a, button, .card, .tool, input, textarea"));
+  });
+})();
+
+// --- 入场动画：滚到哪，标题和内容浮现到哪 ---
+(function () {
+  const els = document.querySelectorAll(".reveal");
+  if (!("IntersectionObserver" in window)) { els.forEach(el => el.classList.add("in")); return; }
+  const io = new IntersectionObserver(es => {
+    es.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => io.observe(el));
+})();
+
+// --- 首屏视差 + 横向滚动条：往下滚，首屏内容上浮淡出，横条的字往左走 ---
+(function () {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const hero = document.querySelector(".hero"), track = document.getElementById("marquee-track");
+  let ticking = false, half = 0;
+  function measure() { half = track ? track.scrollWidth / 2 : 0; }
+  measure();
+  window.addEventListener("resize", measure);
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      if (hero && y < hero.offsetHeight + 200) {
+        hero.style.transform = "translateY(" + (y * 0.28).toFixed(1) + "px)";
+        hero.style.opacity = Math.max(0, 1 - y / 520).toFixed(2);
+      }
+      if (track && half > 0) track.style.transform = "translateX(" + (-(y * 0.35 % half)).toFixed(1) + "px)";
+      ticking = false;
+    });
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+})();
