@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小薰薰 | 个人主页</title>
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=9">
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 </head>
 <body>
@@ -14,12 +14,60 @@
 
 <div id="particles-js"></div>
 
+<!-- 科技背景：模糊散光 + 电路/六边形/二进制 SVG + 扫描线 + HUD 标签 -->
+<div class="diffuse-glow" aria-hidden="true"></div>
+<svg class="tech-bg" viewBox="0 0 420 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <g fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.35">
+    <path d="M10,120 L34,120 L34,168 L58,168 L58,210"/>
+    <path d="M410,210 L388,210 L388,262 L362,262 L362,300"/>
+    <path d="M12,610 L40,610 L40,660 L70,660"/>
+    <path d="M408,520 L382,520 L382,566 L352,566"/>
+    <circle cx="58" cy="210" r="3"/>
+    <circle cx="362" cy="300" r="3"/>
+    <circle cx="70" cy="660" r="3"/>
+    <circle cx="352" cy="566" r="3"/>
+  </g>
+  <g fill="#00d4ff" opacity="0.7">
+    <circle cx="10" cy="120" r="2"/>
+    <circle cx="410" cy="210" r="2"/>
+    <circle cx="12" cy="610" r="2"/>
+    <circle cx="408" cy="520" r="2"/>
+  </g>
+  <g fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.3">
+    <polygon points="390.5,79 390.5,105 368,118 345.5,105 345.5,79 368,66"/>
+    <polygon points="69.3,322 69.3,342 52,352 34.7,342 34.7,322 52,312"/>
+    <polygon points="392.8,688 392.8,712 372,724 351.2,712 351.2,688 372,676"/>
+    <polygon points="61.9,112 61.9,128 48,136 34.1,128 34.1,112 48,104"/>
+  </g>
+  <g fill="#00d4ff" font-size="9" opacity="0.25">
+    <text x="16" y="300">01011010</text>
+    <text x="330" y="480">10100101</text>
+    <text x="20" y="700">11001010</text>
+    <text x="300" y="160">01110100</text>
+  </g>
+  <g stroke="#ffffff" stroke-width="1" opacity="0.4">
+    <path d="M325,90 L335,90 M330,85 L330,95"/>
+    <path d="M55,430 L65,430 M60,425 L60,435"/>
+    <path d="M351,250 L361,250 M356,245 L356,255"/>
+    <path d="M25,520 L35,520 M30,515 L30,525"/>
+  </g>
+  <g fill="none" stroke="#00d4ff" stroke-width="2" opacity="0.7">
+    <path d="M12,26 L12,12 L26,12"/>
+    <path d="M394,12 L408,12 L408,26"/>
+    <path d="M12,734 L12,748 L26,748"/>
+    <path d="M394,748 L408,748 L408,734"/>
+  </g>
+</svg>
+<div class="scan-line" aria-hidden="true"></div>
+<div class="hud-label tl" aria-hidden="true">SYS.ONLINE</div>
+<div class="hud-label bl" aria-hidden="true">DRAGON.HELIX</div>
+
 <header>
   <nav>
     <ul>
       <li><a href="#home" class="active">🏠 首页</a></li>
       <li><a href="#project">📦 我的项目</a></li>
-      <li><a href="#tools">🛠 我的工具</a></li>
+      <li><a href="#tools" id="nav-tools">🛠 我的工具</a></li>
       <li><a href="#about">👤 关于我</a></li>
     </ul>
     <button class="nav-btn" onclick="copyWechat()">💬 联系我</button>
@@ -54,9 +102,9 @@
 <section id="project" class="projects">
   <h2 class="title reveal"><i>//</i> 我的项目 <i>//</i></h2>
   <p class="sub reveal">专业 · 高效 · 创新</p>
-  <div class="helix-wrap" id="helix-projects-wrap">
+  <div class="helix-wrap" id="helix-all-wrap">
     <div class="helix-stage">
-      <div class="helix" id="helix-projects">
+      <div class="helix" id="helix-all">
         <div class="card" data-i="0" role="button" tabindex="0"><div class="num">01</div><div class="ico">📱</div><h3>微信小程序开发</h3><p>专业定制各类小程序<br>开发流程 &amp; 时间预估</p><span class="more">查看详情 →</span></div>
         <div class="card" data-i="1" role="button" tabindex="0"><div class="num">02</div><div class="ico">💻</div><h3>软件开发</h3><p>桌面软件 · 管理系统 · 工具软件<br>高效稳定 · 安全可靠</p><span class="more">查看详情 →</span></div>
         <div class="card" data-i="2" role="button" tabindex="0"><div class="num">03</div><div class="ico">🧑‍💻</div><h3>AI换脸</h3><p>直播换脸 · 视频换脸 · 图片换脸<br>支持各大直播平台兼容</p><span class="more">查看详情 →</span></div>
@@ -65,15 +113,6 @@
         <div class="card" data-i="5" role="button" tabindex="0"><div class="num">06</div><div class="ico">🧊</div><h3>苹果软件多开</h3><p>一台设备 · 多个账号<br>稳定防封 · 安全高效</p><span class="more">查看详情 →</span></div>
         <div class="card" data-i="6" role="button" tabindex="0"><div class="num">07</div><div class="ico">🐉</div><h3>Kali Linux</h3><p>Kali 渗透测试 · 安全攻防 · 漏洞挖掘<br>从入门到精通 · 实战到入狱</p><span class="more">查看详情 →</span></div>
         <div class="card" data-i="7" role="button" tabindex="0"><div class="num">08</div><div class="ico">⚙️</div><h3>更多定制开发</h3><p>根据需求定制各类软件<br>满足您的个性化需求</p><span class="more">查看详情 →</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="tools" class="projects">
-  <div class="helix-wrap" id="helix-tools-wrap">
-    <div class="helix-stage">
-      <div class="helix" id="helix-tools">
         <div class="card tool-card title-card"><div class="t-ico"><b style="background:#2e7bff;font-size:26px;">🛠</b></div><h3>我会用到的工具</h3><p>点开卡片查看详细介绍</p></div>
         <div class="card tool-card" data-t="0" role="button" tabindex="0"><div class="num">01</div><div class="t-ico"><b style="background:#1f9cf0;">VS</b></div><h3>VS Code</h3><p>轻量免费的代码编辑器</p><span class="more">查看详情 →</span></div>
         <div class="card tool-card" data-t="1" role="button" tabindex="0"><div class="num">02</div><div class="t-ico"><b style="background:#21d789;color:#000;">PC</b></div><h3>PyCharm</h3><p>Python 专用开发环境</p><span class="more">查看详情 →</span></div>
@@ -95,6 +134,7 @@
     </div>
   </div>
 </section>
+
 
 <section id="about" class="about">
   <h2 class="title reveal"><i>//</i> 关于我 <i>//</i></h2>
@@ -161,6 +201,6 @@
 <div id="copy-toast" class="copy-toast" role="status"></div>
 
 <script src="js/particles.js"></script>
-<script src="js/app.js?v=3"></script>
+<script src="js/app.js?v=9"></script>
 </body>
 </html>
