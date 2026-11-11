@@ -4,10 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小薰薰 | 个人主页</title>
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=3">
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 </head>
 <body>
+
+<div class="cursor-dot" id="cursor-dot"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
 
 <div id="particles-js"></div>
 
@@ -37,26 +40,23 @@
       <div id="like-tip" class="like-tip">点个赞支持一下吧！</div>
     </div>
   </div>
-  <h1>By:薰思宇</h1>
-  <h2 id="typing">全栈开发者 &amp; 创意科技探索者</h2>
-  <p>用代码创造价值 &nbsp;·&nbsp; 用科技改变生活</p>
-  <div class="hero-btns">
+  <h1 class="reveal">By:薰思宇</h1>
+  <h2 id="typing" class="reveal">全栈开发者 &amp; 创意科技探索者</h2>
+  <p class="reveal">用代码创造价值 &nbsp;·&nbsp; 用科技改变生活</p>
+  <div class="hero-btns reveal">
     <a href="#project" class="btn-fill">📦 我的项目</a>
     <button onclick="copyWechat()">💬 联系我</button>
   </div>
 </section>
 
+<div class="marquee" aria-hidden="true"><div class="marquee-track" id="marquee-track"><span>微信小程序开发 ✦ 软件开发 ✦ AI换脸 ✦ Android+iPhone定位 ✦ 网页搭建 ✦ 苹果软件多开 ✦ Kali Linux ✦ 更多定制开发 ✦&nbsp;</span><span>微信小程序开发 ✦ 软件开发 ✦ AI换脸 ✦ Android+iPhone定位 ✦ 网页搭建 ✦ 苹果软件多开 ✦ Kali Linux ✦ 更多定制开发 ✦&nbsp;</span></div></div>
+
 <section id="project" class="projects">
-  <h2 class="title"><i>//</i> 我的项目 <i>//</i></h2>
-  <p class="sub">专业 · 高效 · 创新</p>
+  <h2 class="title reveal"><i>//</i> 我的项目 <i>//</i></h2>
+  <p class="sub reveal">专业 · 高效 · 创新</p>
   <div class="helix-wrap" id="helix-projects-wrap">
     <div class="helix-stage">
-      <div class="helix-zoom">
-        <button class="zoom-in" aria-label="放大">＋</button>
-        <button class="zoom-out" aria-label="缩小">－</button>
-      </div>
       <div class="helix" id="helix-projects">
-        <div class="beam"></div>
         <div class="card" data-i="0" role="button" tabindex="0"><div class="num">01</div><div class="ico">📱</div><h3>微信小程序开发</h3><p>专业定制各类小程序<br>开发流程 &amp; 时间预估</p><span class="more">查看详情 →</span></div>
         <div class="card" data-i="1" role="button" tabindex="0"><div class="num">02</div><div class="ico">💻</div><h3>软件开发</h3><p>桌面软件 · 管理系统 · 工具软件<br>高效稳定 · 安全可靠</p><span class="more">查看详情 →</span></div>
         <div class="card" data-i="2" role="button" tabindex="0"><div class="num">03</div><div class="ico">🧑‍💻</div><h3>AI换脸</h3><p>直播换脸 · 视频换脸 · 图片换脸<br>支持各大直播平台兼容</p><span class="more">查看详情 →</span></div>
@@ -71,16 +71,10 @@
 </section>
 
 <section id="tools" class="projects">
-  <h2 class="title"><i>//</i> 我会用到的工具 <i>//</i></h2>
-  <p class="sub">点开卡片查看详细介绍</p>
   <div class="helix-wrap" id="helix-tools-wrap">
     <div class="helix-stage">
-      <div class="helix-zoom">
-        <button class="zoom-in" aria-label="放大">＋</button>
-        <button class="zoom-out" aria-label="缩小">－</button>
-      </div>
       <div class="helix" id="helix-tools">
-        <div class="beam"></div>
+        <div class="card tool-card title-card"><div class="t-ico"><b style="background:#2e7bff;font-size:26px;">🛠</b></div><h3>我会用到的工具</h3><p>点开卡片查看详细介绍</p></div>
         <div class="card tool-card" data-t="0" role="button" tabindex="0"><div class="num">01</div><div class="t-ico"><b style="background:#1f9cf0;">VS</b></div><h3>VS Code</h3><p>轻量免费的代码编辑器</p><span class="more">查看详情 →</span></div>
         <div class="card tool-card" data-t="1" role="button" tabindex="0"><div class="num">02</div><div class="t-ico"><b style="background:#21d789;color:#000;">PC</b></div><h3>PyCharm</h3><p>Python 专用开发环境</p><span class="more">查看详情 →</span></div>
         <div class="card tool-card" data-t="2" role="button" tabindex="0"><div class="num">03</div><div class="t-ico"><b style="background:#3ddc84;color:#073;">AS</b></div><h3>Android Studio</h3><p>谷歌官方 Android 开发工具</p><span class="more">查看详情 →</span></div>
@@ -103,8 +97,8 @@
 </section>
 
 <section id="about" class="about">
-  <h2 class="title"><i>//</i> 关于我 <i>//</i></h2>
-  <div class="about-box">
+  <h2 class="title reveal"><i>//</i> 关于我 <i>//</i></h2>
+  <div class="about-box reveal">
     <div>
       <h3>个人简介</h3>
       <p>你好，我是思宇，一名热爱技术的全栈开发者，日常和代码、终端打交道，也喜欢把想法做成真正能用的东西。</p>
@@ -116,9 +110,9 @@
 </section>
 
 <section id="contact" class="contact">
-  <h2>联系我</h2>
-  <p>有项目需求？欢迎联系我！</p>
-  <div class="wechat-box">
+  <h2 class="reveal">联系我</h2>
+  <p class="reveal">有项目需求？欢迎联系我！</p>
+  <div class="wechat-box reveal">
     💬 微信：<span id="wechat">+1 778 830 1013</span>
   </div>
 </section>
@@ -164,9 +158,9 @@
 
 <audio id="bgm" src="bg.mp3.mp3" loop preload="auto"></audio>
 <button id="music-btn" aria-label="背景音乐开关">🎵</button>
-<button id="sfx-btn" aria-label="提示音开关">🔔</button>
+<div id="copy-toast" class="copy-toast" role="status"></div>
 
 <script src="js/particles.js"></script>
-<script src="js/app.js"></script>
+<script src="js/app.js?v=3"></script>
 </body>
 </html>
