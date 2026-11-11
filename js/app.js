@@ -552,11 +552,11 @@ const FAKE_MESSAGES = [
 // 项目 8 张 + 标题方块 + 工具 16 张在同一条链上，
 // 更多定制开发下面直接就是“我会用到的工具”，再往下是工具方块。
 // 每张卡片一种颜色；一块画布跟在卡片后面画彩色连线 + 彩色粒子。
-// 整条链绕 2 圈（HELIX_TURNS），像龙盘在柱子上一圈一圈往上爬。
+// 整条链绕 6 圈（HELIX_TURNS），像弹簧一样一圈一圈往上爬；圈数多、每步转角大，连线左右振荡成弹簧形，卡片贴在弹簧线上走。
 const HELIX_COLORS = ["#00d4ff", "#ff4d8d", "#a259ff", "#46e696", "#ffd246", "#ff6c37", "#2e7bff", "#ff5c5c"];
 // 一圈一圈往上爬：整条链绕 2 圈（原来 1 圈），相邻两卡角度差翻倍，
 // 左右摆动更大，像龙盘在柱子上一圈一圈往上爬
-const HELIX_TURNS = 2;
+const HELIX_TURNS = 6;
 function initHelix(wrapId, helixId, cardSel, perCardVh) {
   const wrap = document.getElementById(wrapId);
   const helix = document.getElementById(helixId);
@@ -571,7 +571,7 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
   let R = 320, V = 1000, spacing = 250, maxH = 250, frontIdx = -1, firstRun = true;
   function measure() {
     const w = window.innerWidth;
-    R = w < 600 ? 160 : Math.min(w * 0.30, 320);
+    R = w < 600 ? 120 : Math.min(w * 0.25, 280);
     // 同一条链里的卡片等高、间距一致：先恢复自然高度，
     // 量出最高的卡片，再把所有卡片拉成等高，
     // 间距 = 卡片高 + 20px 空隙，分开一点，不重合也不离太远
@@ -580,103 +580,13 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
     cards.forEach(c => { maxH = Math.max(maxH, c.offsetHeight); });
     if (maxH > 50) {
       cards.forEach(c => { c.style.height = maxH + "px"; c.style.marginTop = (-maxH / 2) + "px"; });
-      spacing = maxH + 20;
+      spacing = maxH + 12;
     } else {
       spacing = w < 600 ? 220 : 250;
     }
     // 卡片上下位置由“展开角度”决定（不是取模后的角度），
     // 这样绕 2 圈时两圈的卡片不会重叠；相邻两卡垂直间距仍 = spacing
     V = (N * spacing) / (2 * HELIX_TURNS);
-  }
-
-  // ---------- 彩色连线 + 粒子（画布，跟在卡片后面） ----------
-  const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const stage = wrap.querySelector(".helix-stage");
-  if (!reduceMotion && stage) {
-    const cv = document.createElement("canvas");
-    cv.className = "helix-fx";
-    stage.insertBefore(cv, helix);
-    const ctx = cv.getContext("2d");
-    const dpr = window.devicePixelRatio || 1;
-    let W = 0, H = 0, parts = [];
-    function resize() {
-      W = stage.clientWidth; H = stage.clientHeight;
-      cv.width = Math.max(1, W * dpr); cv.height = Math.max(1, H * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    resize();
-    window.addEventListener("resize", resize);
-    const pick = () => HELIX_COLORS[(Math.random() * HELIX_COLORS.length) | 0];
-    // 卡片中心相对舞台（画布）的坐标；画布铺满舞台，所以和画布坐标一致
-    function center(el) {
-      const s = stage.getBoundingClientRect(), r = el.getBoundingClientRect();
-      return { x: r.left + r.width / 2 - s.left, y: r.top + r.height / 2 - s.top };
-    }
-    function linePts() {
-      const pts = [];
-      cards.forEach(c => {
-        if (parseFloat(c.style.opacity || "1") > 0.08) {
-          const p = center(c);
-          if (p.y > -150 && p.y < H + 150) pts.push(p);   // 只取画面里的卡片，渐变才铺得满
-        }
-      });
-      pts.sort((a, b) => a.y - b.y);
-      return pts;
-    }
-    function smooth(ctx, pts) {
-      ctx.beginPath();
-      ctx.moveTo(pts[0].x, pts[0].y);
-      for (let i = 0; i < pts.length - 1; i++) {
-        const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
-        ctx.bezierCurveTo(p1.x + (p2.x - p0.x) / 6, p1.y + (p2.y - p0.y) / 6, p2.x - (p3.x - p1.x) / 6, p2.y - (p3.y - p1.y) / 6, p2.x, p2.y);
-      }
-    }
-    let lastT = performance.now();
-    function frame(now) {
-      const dt = Math.min(50, now - lastT); lastT = now;
-      const rect = wrap.getBoundingClientRect();
-      if (rect.bottom > 0 && rect.top < window.innerHeight) {
-        ctx.clearRect(0, 0, W, H);
-        const pts = linePts();
-        // 彩色连线：穿过所有可见卡片中心
-        if (pts.length > 1) {
-          const ys = pts.map(p => p.y), minY = Math.min.apply(null, ys), maxY = Math.max.apply(null, ys);
-          // 彩色渐变：紫→粉→青→蓝→绿→黄，沿着线循环两次，颜色变化更密更彩
-          const g = ctx.createLinearGradient(0, minY, 0, Math.max(maxY, minY + 1));
-          const RAINBOW = ["#a259ff", "#ff4d8d", "#00d4ff", "#2e7bff", "#46e696", "#ffd246", "#a259ff", "#ff4d8d", "#00d4ff", "#2e7bff", "#46e696"];
-          RAINBOW.forEach((col, k) => g.addColorStop(k / (RAINBOW.length - 1), col));
-          ctx.globalCompositeOperation = "source-over";
-          ctx.lineCap = "round"; ctx.lineJoin = "round";
-          ctx.strokeStyle = g; ctx.globalAlpha = 0.18; ctx.lineWidth = 24; ctx.shadowBlur = 0;
-          smooth(ctx, pts); ctx.stroke();
-          ctx.globalAlpha = 1; ctx.lineWidth = 10; ctx.shadowColor = "rgba(160,110,255,.85)"; ctx.shadowBlur = 20;
-          smooth(ctx, pts); ctx.stroke();
-          ctx.globalAlpha = 0.9; ctx.lineWidth = 4; ctx.shadowBlur = 0;
-          smooth(ctx, pts); ctx.stroke();
-          ctx.shadowBlur = 0;
-          // 线旁边的彩色粒子：沿着线随机飘
-          for (let k = 0; k < 2; k++) {
-            const p = pts[(Math.random() * pts.length) | 0];
-            parts.push({ x: p.x + (Math.random() - 0.5) * 90, y: p.y + (Math.random() - 0.5) * 90, vx: (Math.random() - 0.5) * 0.5, vy: -0.2 - Math.random() * 0.5, t: 0, l: 1200 + Math.random() * 1000, s: 1 + Math.random() * 2, c: pick() });
-          }
-          if (parts.length > 260) parts.splice(0, parts.length - 260);
-        }
-        // 粒子
-        ctx.globalCompositeOperation = "lighter";
-        parts = parts.filter(p => (p.t += dt) < p.l);
-        parts.forEach(p => {
-          const k = 1 - p.t / p.l;
-          p.x += p.vx * dt / 16; p.y += p.vy * dt / 16; p.vx *= 0.985; p.vy *= 0.985;
-          ctx.globalAlpha = k; ctx.shadowColor = p.c; ctx.shadowBlur = 12; ctx.fillStyle = p.c;
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, 6.283); ctx.fill();
-        });
-        ctx.globalAlpha = 1; ctx.shadowBlur = 0; ctx.globalCompositeOperation = "source-over";
-      } else {
-        ctx.clearRect(0, 0, W, H);
-      }
-      requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
   }
 
   function update() {
@@ -696,9 +606,15 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
       const f = Math.cos(a * Math.PI / 180);          // 1 = 正面，-1 = 背面
       const y = (u / 180) * V + yOff;
       const s = 0.82 + 0.18 * Math.max(0, f);
-      const o = Math.max(0, Math.min(1, (f + 0.25) / 0.9));
-      c.style.transform = "translateY(" + y.toFixed(1) + "px) rotateY(" + a.toFixed(1) + "deg) translateZ(" + R.toFixed(0) + "px) scale(" + s.toFixed(3) + ")";
+      // 全部清楚显示在弹簧线上：不要模糊滤镜（模糊会让其他卡片看不见、只剩一张），
+      // 透明度下限 0.75（背面也看得清），正面最亮 1.0 + 发光，全部卡片都贴在线上
+      const o = Math.max(0.75, Math.min(1, 0.875 + 0.125 * f));
+      // 卡片不再侧转消失：位置直接走弹簧（横向 x = R*sin(a)，纵向 y），
+      // 只留 25% 的小倾斜（最大 45°，正面可读、不侧成一条线），全部卡片都看得见
+      const x = R * Math.sin(a * Math.PI / 180);
+      c.style.transform = "translateX(" + x.toFixed(1) + "px) translateY(" + y.toFixed(1) + "px) rotateY(" + (a * 0.25).toFixed(1) + "deg) scale(" + s.toFixed(3) + ")";
       c.style.opacity = o.toFixed(2);
+      c.style.filter = "";
       if (f > bestF) { bestF = f; best = i; }
     });
     if (best !== frontIdx) {
@@ -724,7 +640,7 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
 }
 // 项目 8 张 + 标题方块 + 工具 16 张，一共 25 张在同一条链上
 // 每张卡 32vh 滚动（原来 55vh）：整条链 800vh，换一张卡约滚 29vh，紧凑不空
-initHelix("helix-all-wrap", "helix-all", ".card", 32);
+initHelix("helix-all-wrap", "helix-all", ".card", 20);
 
 // 导航“我的工具”：滚到标题方块转到正面的位置（整条链的 1/3 处）
 function scrollToTools() {
@@ -851,4 +767,50 @@ document.documentElement.classList.add("js");
   }
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
+})();
+
+// --- 全屏闪烁星空：固定画布，星星明暗呼吸，减弱动效时只画一次静态星空 ---
+(function () {
+  const cv = document.getElementById("starfield");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const COLORS = ["#ffffff", "#cfe4ff", "#ffd7e8", "#d9c8ff", "#ffe9a8", "#9fd8ff"];
+  let W = 0, H = 0, stars = [];
+  function build() {
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = Math.max(1, W * dpr); cv.height = Math.max(1, H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.round((W * H) / 4000);
+    stars = [];
+    for (let i = 0; i < n; i++) {
+      stars.push({
+        x: Math.random() * W, y: Math.random() * H,
+        r: 0.4 + Math.random() * 1.8,
+        a: 0.25 + Math.random() * 0.55,
+        sp: 0.4 + Math.random() * 1.4, ph: Math.random() * 6.283,
+        c: COLORS[(Math.random() * COLORS.length) | 0]
+      });
+    }
+  }
+  build();
+  window.addEventListener("resize", build);
+  function draw(now) {
+    ctx.clearRect(0, 0, W, H);
+    for (const s of stars) {
+      const tw = 0.5 + 0.5 * Math.sin(now / 1000 * s.sp + s.ph);
+      ctx.globalAlpha = s.a * (0.35 + 0.65 * tw);
+      ctx.fillStyle = s.c;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.283); ctx.fill();
+      if (s.r > 1.9) {
+        ctx.globalAlpha *= 0.6;
+        ctx.fillRect(s.x - s.r * 3, s.y - 0.5, s.r * 6, 1);
+        ctx.fillRect(s.x - 0.5, s.y - s.r * 3, 1, s.r * 6);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  if (reduce) { draw(0); return; }
+  (function loop(now) { draw(now); requestAnimationFrame(loop); })(0);
 })();
