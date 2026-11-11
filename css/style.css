@@ -41,13 +41,13 @@ nav a:hover,nav a.active{color:#2eaaff;border-color:#1e8cff}
 /* 项目卡片 */
 .projects{padding:36px 5% 8px}
 .cards{max-width:1250px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.card{position:relative;background:transparent;border:2px solid var(--bd);border:2px solid color-mix(in srgb,var(--ac,#2eaaff) 65%,transparent);border-radius:18px;padding:12px 12px 16px;text-align:center;box-shadow:0 0 20px rgba(90,140,255,.14),inset 0 1px 0 rgba(255,255,255,.18);transition:.3s}
+.card{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.01) 45%,rgba(10,22,48,.08));border:2px solid var(--bd);border:2px solid color-mix(in srgb,var(--ac,#2eaaff) 65%,transparent);border-radius:18px;padding:12px 12px 16px;text-align:center;-webkit-backdrop-filter:blur(4px) saturate(140%);backdrop-filter:blur(4px) saturate(140%);box-shadow:0 0 20px rgba(90,140,255,.14),inset 0 1px 0 rgba(255,255,255,.18);transition:.3s}
 .card:hover{transform:translateY(-6px);box-shadow:0 0 30px rgba(30,140,255,.45)}
-.num{position:absolute;left:14px;top:10px;color:var(--ac,#2eaaff);font-style:italic;font-size:17px;font-weight:700}
+.num{position:absolute;left:14px;top:10px;color:color-mix(in srgb,var(--ac,#2eaaff) 80%,black);font-style:italic;font-size:17px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.7)}
 .ico{width:56px;height:56px;margin:4px auto 6px;display:flex;align-items:center;justify-content:center;font-size:30px;border-radius:50%;background:radial-gradient(circle,rgba(30,140,255,.55),transparent 70%);filter:drop-shadow(0 0 18px var(--ac,#1e8cff))}
-.card h3{font-size:20px;margin-bottom:6px;color:var(--ac,#fff);font-weight:700}
-.card p{color:var(--ac,#9fb3d6);font-size:15px;line-height:1.7;min-height:44px;font-weight:600}
-.more{display:inline-block;margin-top:10px;padding:4px 20px;border:1px solid var(--ac,var(--bd));border-radius:4px;font-size:15px;color:var(--ac,#cfe3ff);font-weight:700}
+.card h3{font-size:20px;margin-bottom:6px;color:color-mix(in srgb,var(--ac,#fff) 80%,black);font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.card p{color:color-mix(in srgb,var(--ac,#9fb3d6) 80%,black);font-size:15px;line-height:1.7;min-height:44px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.more{display:inline-block;margin-top:10px;padding:4px 20px;border:1px solid var(--ac,var(--bd));border-radius:4px;font-size:15px;color:color-mix(in srgb,var(--ac,#cfe3ff) 80%,black);font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.7)}
 .more:hover{background:rgba(30,140,255,.25)}
 
 /* 关于我 */
@@ -156,7 +156,7 @@ nav{padding:10px 14px}nav ul{gap:12px}nav a{font-size:13px}.nav-btn{padding:7px 
 .helix-fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
 /* 彩色连线画布由 JS 创建（.helix-fx），代替原来的单色光柱 */
 /* 螺旋里的卡片：位置由 JS 每帧算出，只做发光过渡，不过渡位移 */
-.helix .card{position:absolute;left:0;top:0;width:260px;margin:-65px 0 0 -130px;padding:8px 10px 10px;display:flex;flex-direction:column;justify-content:center;align-items:center;backface-visibility:hidden;transition:box-shadow .3s,border-color .3s;will-change:transform,opacity;border-color:var(--ac,var(--bd))}
+.helix .card{position:absolute;left:0;top:0;width:350px;margin:-65px 0 0 -175px;padding:8px 10px 10px;display:flex;flex-direction:column;justify-content:center;align-items:center;backface-visibility:hidden;transition:box-shadow .3s,border-color .3s;will-change:transform,opacity;border-color:var(--ac,var(--bd))}
 /* 转到正面的卡片：瞬间发光 */
 .card.front{border-color:var(--ac,#7ee6ff);box-shadow:0 0 46px 6px color-mix(in srgb,var(--ac,#00d4ff) 85%,transparent),inset 0 0 30px color-mix(in srgb,var(--ac,#00d4ff) 30%,transparent)}
 /* 工具卡片里的字母徽标 */
@@ -165,7 +165,7 @@ nav{padding:10px 14px}nav ul{gap:12px}nav a{font-size:13px}.nav-btn{padding:7px 
 /* 关于我只剩简介，改成单列 */
 .about-box{grid-template-columns:1fr}
 @media(max-width:600px){
-.helix .card{width:200px;margin:-65px 0 0 -100px}
+.helix .card{width:270px;margin:-65px 0 0 -135px}
 .helix .card h3{font-size:18px}
 .helix-stage{perspective:1000px}
 }
