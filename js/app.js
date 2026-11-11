@@ -544,11 +544,14 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
   if (!N) return null;
   const step = 360 / N;
   wrap.style.height = (N * (perCardVh || 70)) + "vh";
-  let R = 320, V = 260, zoom = 1, frontIdx = -1, firstRun = true;
+  let R = 320, V = 1000, zoom = 1, frontIdx = -1, firstRun = true;
   function measure() {
     const w = window.innerWidth;
     R = (w < 600 ? 175 : Math.min(w * 0.30, 320)) * zoom;
-    V = Math.min(window.innerHeight * 0.32, 300);
+    // 卡片上下分开：相邻两张卡片的垂直间距约一张卡片高（250px），
+    // 像龙盘柱一样一圈一圈绕上去，不再压在一起
+    const spacing = w < 600 ? 220 : 250;
+    V = (N * spacing) / 2;
   }
   function update() {
     const rect = wrap.getBoundingClientRect();
