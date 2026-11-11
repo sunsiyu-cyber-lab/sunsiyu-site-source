@@ -16,6 +16,7 @@
     <ul>
       <li><a href="#home" class="active">🏠 首页</a></li>
       <li><a href="#project">📦 我的项目</a></li>
+      <li><a href="#tools">🛠 我的工具</a></li>
       <li><a href="#about">👤 关于我</a></li>
     </ul>
     <button class="nav-btn" onclick="copyWechat()">💬 联系我</button>
@@ -48,15 +49,56 @@
 <section id="project" class="projects">
   <h2 class="title"><i>//</i> 我的项目 <i>//</i></h2>
   <p class="sub">专业 · 高效 · 创新</p>
-  <div class="cards">
-    <div class="card" data-i="0" role="button" tabindex="0"><div class="num">01</div><div class="ico">📱</div><h3>微信小程序开发</h3><p>专业定制各类小程序<br>开发流程 &amp; 时间预估</p><span class="more">查看详情 →</span></div>
-    <div class="card" data-i="1" role="button" tabindex="0"><div class="num">02</div><div class="ico">💻</div><h3>软件开发</h3><p>桌面软件 · 管理系统 · 工具软件<br>高效稳定 · 安全可靠</p><span class="more">查看详情 →</span></div>
-    <div class="card" data-i="2" role="button" tabindex="0"><div class="num">03</div><div class="ico">🧑‍💻</div><h3>AI换脸</h3><p>直播换脸 · 视频换脸 · 图片换脸<br>支持各大直播平台兼容</p><span class="more">查看详情 →</span></div>
-    <div class="card" data-i="3" role="button" tabindex="0"><div class="num">04</div><div class="ico">📍</div><h3>Android+iPhone定位</h3><p>精准定位 · 实时追踪 · 安全稳定<br>保护家人 · 企业设备管理</p><span class="more">查看详情 →</span></div>
-    <div class="card" data-i="4" role="button" tabindex="0"><div class="num">05</div><div class="ico">🌐</div><h3>网页搭建</h3><p>响应式网站 · 企业官网 · 个人网站<br>开发流程 &amp; 时间预估</p><span class="more">查看详情 →</span></div>
-    <div class="card" data-i="5" role="button" tabindex="0"><div class="num">06</div><div class="ico">🧊</div><h3>苹果软件多开</h3><p>一台设备 · 多个账号<br>稳定防封 · 安全高效</p><span class="more">查看详情 →</span></div>
-    <div class="card" data-i="6" role="button" tabindex="0"><div class="num">07</div><div class="ico">🐉</div><h3>Kali Linux</h3><p>Kali 渗透测试 · 安全攻防 · 漏洞挖掘<br>从入门到精通 · 实战到入狱</p><span class="more">查看详情 →</span></div>
-    <div class="card" data-i="7" role="button" tabindex="0"><div class="num">08</div><div class="ico">⚙️</div><h3>更多定制开发</h3><p>根据需求定制各类软件<br>满足您的个性化需求</p><span class="more">查看详情 →</span></div>
+  <div class="helix-wrap" id="helix-projects-wrap">
+    <div class="helix-stage">
+      <div class="helix-zoom">
+        <button class="zoom-in" aria-label="放大">＋</button>
+        <button class="zoom-out" aria-label="缩小">－</button>
+      </div>
+      <div class="helix" id="helix-projects">
+        <div class="beam"></div>
+        <div class="card" data-i="0" role="button" tabindex="0"><div class="num">01</div><div class="ico">📱</div><h3>微信小程序开发</h3><p>专业定制各类小程序<br>开发流程 &amp; 时间预估</p><span class="more">查看详情 →</span></div>
+        <div class="card" data-i="1" role="button" tabindex="0"><div class="num">02</div><div class="ico">💻</div><h3>软件开发</h3><p>桌面软件 · 管理系统 · 工具软件<br>高效稳定 · 安全可靠</p><span class="more">查看详情 →</span></div>
+        <div class="card" data-i="2" role="button" tabindex="0"><div class="num">03</div><div class="ico">🧑‍💻</div><h3>AI换脸</h3><p>直播换脸 · 视频换脸 · 图片换脸<br>支持各大直播平台兼容</p><span class="more">查看详情 →</span></div>
+        <div class="card" data-i="3" role="button" tabindex="0"><div class="num">04</div><div class="ico">📍</div><h3>Android+iPhone定位</h3><p>精准定位 · 实时追踪 · 安全稳定<br>保护家人 · 企业设备管理</p><span class="more">查看详情 →</span></div>
+        <div class="card" data-i="4" role="button" tabindex="0"><div class="num">05</div><div class="ico">🌐</div><h3>网页搭建</h3><p>响应式网站 · 企业官网 · 个人网站<br>开发流程 &amp; 时间预估</p><span class="more">查看详情 →</span></div>
+        <div class="card" data-i="5" role="button" tabindex="0"><div class="num">06</div><div class="ico">🧊</div><h3>苹果软件多开</h3><p>一台设备 · 多个账号<br>稳定防封 · 安全高效</p><span class="more">查看详情 →</span></div>
+        <div class="card" data-i="6" role="button" tabindex="0"><div class="num">07</div><div class="ico">🐉</div><h3>Kali Linux</h3><p>Kali 渗透测试 · 安全攻防 · 漏洞挖掘<br>从入门到精通 · 实战到入狱</p><span class="more">查看详情 →</span></div>
+        <div class="card" data-i="7" role="button" tabindex="0"><div class="num">08</div><div class="ico">⚙️</div><h3>更多定制开发</h3><p>根据需求定制各类软件<br>满足您的个性化需求</p><span class="more">查看详情 →</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tools" class="projects">
+  <h2 class="title"><i>//</i> 我会用到的工具 <i>//</i></h2>
+  <p class="sub">点开卡片查看详细介绍</p>
+  <div class="helix-wrap" id="helix-tools-wrap">
+    <div class="helix-stage">
+      <div class="helix-zoom">
+        <button class="zoom-in" aria-label="放大">＋</button>
+        <button class="zoom-out" aria-label="缩小">－</button>
+      </div>
+      <div class="helix" id="helix-tools">
+        <div class="beam"></div>
+        <div class="card tool-card" data-t="0" role="button" tabindex="0"><div class="num">01</div><div class="t-ico"><b style="background:#1f9cf0;">VS</b></div><h3>VS Code</h3><p>轻量免费的代码编辑器</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="1" role="button" tabindex="0"><div class="num">02</div><div class="t-ico"><b style="background:#21d789;color:#000;">PC</b></div><h3>PyCharm</h3><p>Python 专用开发环境</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="2" role="button" tabindex="0"><div class="num">03</div><div class="t-ico"><b style="background:#3ddc84;color:#073;">AS</b></div><h3>Android Studio</h3><p>谷歌官方 Android 开发工具</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="3" role="button" tabindex="0"><div class="num">04</div><div class="t-ico"><b style="background:#147efb;">Xc</b></div><h3>Xcode</h3><p>苹果官方 iOS 开发工具</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="4" role="button" tabindex="0"><div class="num">05</div><div class="t-ico"><b style="background:#3776ab;color:#ffd43b;">Py</b></div><h3>Python</h3><p>简洁易上手的通用编程语言</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="5" role="button" tabindex="0"><div class="num">06</div><div class="t-ico"><b style="background:#539e43;">JS</b></div><h3>Node.js</h3><p>让 JavaScript 运行在服务器端</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="6" role="button" tabindex="0"><div class="num">07</div><div class="t-ico"><b style="background:#f05032;">Git</b></div><h3>Git</h3><p>分布式版本控制工具</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="7" role="button" tabindex="0"><div class="num">08</div><div class="t-ico"><b style="background:#24292f;border:1px solid #8b949e;">GH</b></div><h3>GitHub</h3><p>全球最大的代码托管平台</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="8" role="button" tabindex="0"><div class="num">09</div><div class="t-ico"><b style="background:#2496ed;">Dk</b></div><h3>Docker</h3><p>把应用打包成容器的工具</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="9" role="button" tabindex="0"><div class="num">10</div><div class="t-ico"><b style="background:#00758f;font-size:12px;">SQL</b></div><h3>MySQL</h3><p>常用的关系型数据库</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="10" role="button" tabindex="0"><div class="num">11</div><div class="t-ico"><b style="background:#07c160;">WX</b></div><h3>微信开发者工具</h3><p>腾讯官方小程序开发工具</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="11" role="button" tabindex="0"><div class="num">12</div><div class="t-ico"><b style="background:#ff6c37;">Pm</b></div><h3>Postman</h3><p>测试和调试 API 的工具</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="12" role="button" tabindex="0"><div class="num">13</div><div class="t-ico"><b style="background:#367bf0;">K</b></div><h3>Kali Linux</h3><p>预装数百种安全工具的 Linux</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="13" role="button" tabindex="0"><div class="num">14</div><div class="t-ico"><b style="background:#ff6633;">Bp</b></div><h3>Burp Suite</h3><p>Web 应用安全测试平台</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="14" role="button" tabindex="0"><div class="num">15</div><div class="t-ico"><b style="background:#2c7a4b;">Nm</b></div><h3>Nmap</h3><p>开源的网络扫描工具</p><span class="more">查看详情 →</span></div>
+        <div class="card tool-card" data-t="15" role="button" tabindex="0"><div class="num">16</div><div class="t-ico"><b style="background:#1679a7;">Ws</b></div><h3>Wireshark</h3><p>网络抓包与协议分析工具</p><span class="more">查看详情 →</span></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -69,27 +111,6 @@
       <p>我主要做微信小程序、桌面软件和网站，也涉足 Android、iOS 应用与 AI 技术，并长期钻研 Kali Linux 与网络安全，乐于带新人从入门到入狱。</p>
       <p>做项目我习惯先把需求聊清楚，再动手开发：流程透明、沟通及时，交付后继续跟进维护。</p>
       <p>相信用代码和创意能为客户创造实实在在的价值，有想法欢迎随时找我聊聊。</p>
-    </div>
-    <div>
-      <h3>我会用到的工具</h3>
-      <div class="tools">
-        <span class="tool" role="button" tabindex="0" data-t="0"><b style="background:#1f9cf0;">VS</b>VS Code</span>
-        <span class="tool" role="button" tabindex="0" data-t="1"><b style="background:#21d789;color:#000;">PC</b>PyCharm</span>
-        <span class="tool" role="button" tabindex="0" data-t="2"><b style="background:#3ddc84;color:#073;">AS</b>Android Studio</span>
-        <span class="tool" role="button" tabindex="0" data-t="3"><b style="background:#147efb;">Xc</b>Xcode</span>
-        <span class="tool" role="button" tabindex="0" data-t="4"><b style="background:#3776ab;color:#ffd43b;">Py</b>Python</span>
-        <span class="tool" role="button" tabindex="0" data-t="5"><b style="background:#539e43;">JS</b>Node.js</span>
-        <span class="tool" role="button" tabindex="0" data-t="6"><b style="background:#f05032;">Git</b>Git</span>
-        <span class="tool" role="button" tabindex="0" data-t="7"><b style="background:#24292f;border:1px solid #8b949e;">GH</b>GitHub</span>
-        <span class="tool" role="button" tabindex="0" data-t="8"><b style="background:#2496ed;">Dk</b>Docker</span>
-        <span class="tool" role="button" tabindex="0" data-t="9"><b style="background:#00758f;font-size:12px;">SQL</b>MySQL</span>
-        <span class="tool" role="button" tabindex="0" data-t="10"><b style="background:#07c160;">WX</b>微信开发者工具</span>
-        <span class="tool" role="button" tabindex="0" data-t="11"><b style="background:#ff6c37;">Pm</b>Postman</span>
-        <span class="tool" role="button" tabindex="0" data-t="12"><b style="background:#367bf0;">K</b>Kali Linux</span>
-        <span class="tool" role="button" tabindex="0" data-t="13"><b style="background:#ff6633;">Bp</b>Burp Suite</span>
-        <span class="tool" role="button" tabindex="0" data-t="14"><b style="background:#2c7a4b;">Nm</b>Nmap</span>
-        <span class="tool" role="button" tabindex="0" data-t="15"><b style="background:#1679a7;">Ws</b>Wireshark</span>
-      </div>
     </div>
   </div>
 </section>
@@ -143,6 +164,7 @@
 
 <audio id="bgm" src="bg.mp3.mp3" loop preload="auto"></audio>
 <button id="music-btn" aria-label="背景音乐开关">🎵</button>
+<button id="sfx-btn" aria-label="提示音开关">🔔</button>
 
 <script src="js/particles.js"></script>
 <script src="js/app.js"></script>
