@@ -6,7 +6,7 @@ a{text-decoration:none;color:inherit}
 
 
 /* 背景：银河樱花图，铺满拉伸 */
-body::before{content:"";position:fixed;inset:0;z-index:-6;background:url("img/bg-galaxy.JPG") center center/100% 100% no-repeat}
+body::before{content:"";position:fixed;inset:0;z-index:-6;background:url("../img/bg-galaxy.JPG") center center/100% 100% no-repeat}
 #particles-js{position:fixed;inset:0;z-index:-5}
 #starfield{position:fixed;inset:0;width:100vw;height:100vh;z-index:-4;pointer-events:none}
 
