@@ -48,6 +48,7 @@ const projects = [
 const modal = document.getElementById("modal");
 const $ = id => document.getElementById(id);
 function openModal(i) {
+  blip(660, 990, 0.16, 0.08);
   const p = projects[i];
   $("m-ico").textContent = p.ico;
   $("m-title").textContent = p.title;
@@ -64,7 +65,7 @@ function closeModal() {
   document.querySelectorAll(".modal.open").forEach(m => { m.classList.remove("open"); m.setAttribute("aria-hidden", "true"); });
   document.body.style.overflow = "";
 }
-document.querySelectorAll(".card").forEach(c => {
+document.querySelectorAll(".card[data-i]").forEach(c => {
   c.addEventListener("click", e => {
     const r = c.getBoundingClientRect(), d = document.createElement("span");
     d.className = "ripple"; d.style.left = (e.clientX - r.left || r.width / 2) + "px"; d.style.top = (e.clientY - r.top || r.height / 2) + "px";
@@ -99,6 +100,7 @@ const tools = [
 ];
 const tmodal = $("tmodal");
 function openTool(el) {
+  blip(660, 990, 0.16, 0.08);
   const t = tools[+el.dataset.t];
   $("t-ico").innerHTML = el.querySelector("b").outerHTML;
   $("t-title").textContent = el.textContent.trim();
@@ -493,3 +495,132 @@ const FAKE_MESSAGES = [
     if (qi <= 2) qi = 1;                                          // 刚进页面时，让真实留言尽快飘出来
   }).catch(() => {});
 })();
+
+
+// ===== 提示音（科技感 blip，Web Audio 合成，无需音频文件） =====
+// 注意：浏览器规定音频必须等用户先点一下页面才能出声，所以提示音
+// 在第一次点击/触摸页面后才开始响；右下角 🔔 按钮可以开关提示音。
+let sfxCtx = null, sfxOn = true;
+function sfxCtxGet() {
+  if (!sfxCtx) sfxCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (sfxCtx.state === "suspended") sfxCtx.resume();
+  return sfxCtx;
+}
+function blip(f1, f2, dur, vol) {
+  if (!sfxOn) return;
+  try {
+    const ctx = sfxCtxGet(), t = ctx.currentTime, d = dur || 0.14;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.setValueAtTime(f1, t);
+    o.frequency.exponentialRampToValueAtTime(f2, t + d);
+    g.gain.setValueAtTime(vol || 0.06, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t); o.stop(t + d + 0.03);
+  } catch (e) {}
+}
+["pointerdown", "keydown", "touchstart"].forEach(t =>
+  document.addEventListener(t, function unlock() { try { sfxCtxGet(); } catch (e) {} document.removeEventListener(t, unlock); }, { passive: true }));
+const sfxBtn = document.getElementById("sfx-btn");
+if (sfxBtn) sfxBtn.addEventListener("click", e => {
+  e.stopPropagation();
+  sfxOn = !sfxOn;
+  sfxBtn.textContent = sfxOn ? "🔔" : "🔕";
+  sfxBtn.classList.toggle("off", !sfxOn);
+  if (sfxOn) blip(880, 1320, 0.12, 0.06);
+});
+
+// ===== 螺旋圆柱：卡片围着中间圆柱，滚动时依次转到正面 =====
+// 原理：每张卡片固定一个基础角度，滚动进度决定圆柱整体旋转角度；
+// 卡片的高度由它当前角度决定，角度越靠近正面越居中，
+// 转到背面的卡片渐隐（配合 backface-visibility 不会看到反面文字）。
+function initHelix(wrapId, helixId, cardSel, perCardVh) {
+  const wrap = document.getElementById(wrapId);
+  const helix = document.getElementById(helixId);
+  if (!wrap || !helix) return null;
+  const cards = Array.from(helix.querySelectorAll(cardSel));
+  const N = cards.length;
+  if (!N) return null;
+  const step = 360 / N;
+  wrap.style.height = (N * (perCardVh || 70)) + "vh";
+  let R = 320, V = 260, zoom = 1, frontIdx = -1, firstRun = true;
+  function measure() {
+    const w = window.innerWidth;
+    R = (w < 600 ? 175 : Math.min(w * 0.30, 320)) * zoom;
+    V = Math.min(window.innerHeight * 0.32, 300);
+  }
+  function update() {
+    const rect = wrap.getBoundingClientRect();
+    const total = Math.max(1, rect.height - window.innerHeight);
+    const p = Math.min(1, Math.max(0, -rect.top / total));
+    const rot = p * (N - 1) * step;
+    let best = -1, bestF = -2;
+    cards.forEach((c, i) => {
+      let a = (i * step - rot) % 360;
+      if (a > 180) a -= 360;
+      if (a < -180) a += 360;
+      const f = Math.cos(a * Math.PI / 180);          // 1 = 正面，-1 = 背面
+      const y = (a / 180) * V;
+      const s = 0.82 + 0.18 * Math.max(0, f);
+      const o = Math.max(0, Math.min(1, (f + 0.25) / 0.9));
+      c.style.transform = "translateY(" + y.toFixed(1) + "px) rotateY(" + a.toFixed(1) + "deg) translateZ(" + R.toFixed(0) + "px) scale(" + s.toFixed(3) + ")";
+      c.style.opacity = o.toFixed(2);
+      if (f > bestF) { bestF = f; best = i; }
+    });
+    if (best !== frontIdx) {
+      if (frontIdx >= 0) cards[frontIdx].classList.remove("front");
+      frontIdx = best;
+      cards[frontIdx].classList.add("front");
+      const r = wrap.getBoundingClientRect();
+      if (!firstRun && r.top < window.innerHeight && r.bottom > 0) blip(880, 1320, 0.12, 0.05);
+    }
+    firstRun = false;
+  }
+  let ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { update(); ticking = false; });
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", () => { measure(); update(); });
+  const zi = wrap.querySelector(".zoom-in"), zo = wrap.querySelector(".zoom-out");
+  function setZoom(z) { zoom = Math.min(1.6, Math.max(0.6, z)); measure(); update(); }
+  if (zi) zi.addEventListener("click", e => { e.stopPropagation(); setZoom(zoom + 0.15); blip(700, 1050, 0.1, 0.05); });
+  if (zo) zo.addEventListener("click", e => { e.stopPropagation(); setZoom(zoom - 0.15); blip(700, 1050, 0.1, 0.05); });
+  measure();
+  update();
+  return { setZoom };
+}
+initHelix("helix-projects-wrap", "helix-projects", ".card[data-i]", 70);
+initHelix("helix-tools-wrap", "helix-tools", ".tool-card", 55);
+
+// ===== 工具卡片点击（螺旋版）：点开工具介绍弹窗 =====
+function openToolCard(el) {
+  blip(660, 990, 0.16, 0.08);
+  const t = tools[+el.dataset.t];
+  const b = el.querySelector("b");
+  $("t-ico").innerHTML = b ? b.outerHTML : "";
+  $("t-title").textContent = el.querySelector("h3").textContent;
+  $("t-use").textContent = t.use;
+  $("t-list").innerHTML = t.list.map(x => "<li>" + x + "</li>").join("");
+  $("t-note").textContent = t.note ? "⚠ " + t.note : "";
+  $("t-note").style.display = t.note ? "block" : "none";
+  tmodal.classList.add("open");
+  tmodal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+document.querySelectorAll(".tool-card").forEach(el => {
+  el.addEventListener("click", e => {
+    const r = el.getBoundingClientRect(), d = document.createElement("span");
+    d.className = "ripple";
+    d.style.left = (e.clientX - r.left || r.width / 2) + "px";
+    d.style.top = (e.clientY - r.top || r.height / 2) + "px";
+    el.appendChild(d);
+    el.classList.add("flash");
+    setTimeout(() => { d.remove(); el.classList.remove("flash"); }, 760);
+    setTimeout(() => openToolCard(el), 220);
+  });
+  el.addEventListener("keydown", e => { if (e.key === "Enter") openToolCard(el); });
+});
