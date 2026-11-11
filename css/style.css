@@ -152,3 +152,33 @@ nav{padding:10px 14px}nav ul{gap:12px}nav a{font-size:13px}.nav-btn{padding:7px 
 .gb-msg{margin-top:10px;text-align:center;font-size:12px;color:#8aa0c8;min-height:18px}
 .gb-msg.ok{color:#7ee6ff}
 @media(min-width:700px){.gb-strip{left:calc(50% - 330px);top:70px;width:440px;height:210px}.gb-open{left:calc(50% - 330px);top:292px}}
+
+/* ===== 螺旋圆柱（项目 + 工具）：卡片围着中间圆柱向下滑动 ===== */
+.helix-wrap{position:relative}
+.helix-stage{position:sticky;top:0;height:100vh;overflow:hidden;perspective:1300px}
+.helix{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+/* 中间的发光圆柱体 */
+.beam{position:absolute;left:50%;top:50%;width:72px;height:150vh;margin:-75vh 0 0 -36px;border-radius:50%;background:linear-gradient(180deg,transparent,rgba(0,212,255,.18) 18%,rgba(0,212,255,.55) 50%,rgba(0,212,255,.18) 82%,transparent);box-shadow:0 0 60px 12px rgba(0,150,255,.35),0 0 120px 30px rgba(0,150,255,.15);transform:translateZ(-30px)}
+/* 螺旋里的卡片：位置由 JS 每帧算出，只做发光过渡，不过渡位移 */
+.helix .card{position:absolute;left:0;top:0;width:300px;margin:-110px 0 0 -150px;backface-visibility:hidden;transition:box-shadow .3s,border-color .3s;will-change:transform,opacity}
+/* 转到正面的卡片：瞬间发光 */
+.card.front{border-color:#7ee6ff;box-shadow:0 0 46px 6px rgba(0,212,255,.85),inset 0 0 30px rgba(0,212,255,.3)}
+/* 工具卡片里的字母徽标 */
+.t-ico{width:76px;height:76px;margin:4px auto 6px;display:flex;align-items:center;justify-content:center}
+.t-ico b{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 22px rgba(46,170,255,.5)}
+/* 右上角缩放按钮（放大/缩小圆柱） */
+.helix-zoom{position:absolute;right:16px;top:84px;z-index:50;display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:rgba(2,8,25,.7);backdrop-filter:blur(8px)}
+.helix-zoom button{width:44px;height:44px;background:none;border:0;color:#cfe3ff;font-size:22px;cursor:pointer}
+.helix-zoom button+button{border-top:1px solid var(--bd)}
+.helix-zoom button:hover{background:rgba(30,140,255,.25)}
+/* 提示音开关（在音乐按钮上方） */
+#sfx-btn{position:fixed;right:18px;bottom:76px;z-index:1500;width:46px;height:46px;border-radius:50%;border:1px solid #1e8cff;background:rgba(4,14,38,.8);font-size:20px;cursor:pointer;box-shadow:0 0 16px rgba(30,140,255,.5);backdrop-filter:blur(8px)}
+#sfx-btn.off{opacity:.55}
+/* 关于我只剩简介，改成单列 */
+.about-box{grid-template-columns:1fr}
+@media(max-width:600px){
+.helix .card{width:250px;margin:-110px 0 0 -125px}
+.helix .card h3{font-size:15px}
+.helix-stage{perspective:1000px}
+.helix-zoom{top:76px}
+}
