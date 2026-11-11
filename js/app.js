@@ -261,7 +261,7 @@ play().catch(() => {
 
 // ===== 点赞功能（每人每天可点一次）=====
 // 👉 想改点赞数，只改下面这个数字，保存上传即可
-const LIKE_BASE = 2538;
+const LIKE_BASE = 2838;
 // 👉 全网统计（Supabase）：把下面两项填好即可；留空则只在本机计数
 const SUPABASE_URL = "https://lxlxpxdzfnothnshfqht.supabase.co";   // 例如 https://xxxx.supabase.co
 const SUPABASE_KEY = "sb_publishable_GQca5ruj4r-uOuP5ciPwGA_5uI0yLrk";   // 填 anon / publishable 公开密钥，绝对不要填 service_role / secret 密钥
@@ -571,7 +571,7 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
   let R = 320, V = 1000, spacing = 250, maxH = 250, frontIdx = -1, firstRun = true;
   function measure() {
     const w = window.innerWidth;
-    R = w < 600 ? 120 : Math.min(w * 0.25, 280);
+    R = w < 600 ? 85 : Math.min(w * 0.22, 240);
     // 同一条链里的卡片等高、间距一致：先恢复自然高度，
     // 量出最高的卡片，再把所有卡片拉成等高，
     // 间距 = 卡片高 + 20px 空隙，分开一点，不重合也不离太远
@@ -852,9 +852,9 @@ document.documentElement.classList.add("js");
   }
   function frame(now) {
     ctx.clearRect(0, 0, W, H);
-    if (now >= nextSpawn && meteors.length < 4) {
+    if (now >= nextSpawn && meteors.length < 7) {
       spawn();
-      nextSpawn = now + 700 + Math.random() * 700;
+      nextSpawn = now + 400 + Math.random() * 500;
     }
     for (let i = meteors.length - 1; i >= 0; i--) {
       const m = meteors[i];
