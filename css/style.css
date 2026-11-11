@@ -45,9 +45,9 @@ nav a:hover,nav a.active{color:#2eaaff;border-color:#1e8cff}
 .card:hover{transform:translateY(-6px);box-shadow:0 0 30px rgba(30,140,255,.45)}
 .num{position:absolute;left:14px;top:10px;color:var(--ac,#2eaaff);font-style:italic;font-size:15px}
 .ico{width:56px;height:56px;margin:4px auto 6px;display:flex;align-items:center;justify-content:center;font-size:30px;border-radius:50%;background:radial-gradient(circle,rgba(30,140,255,.55),transparent 70%);filter:drop-shadow(0 0 18px var(--ac,#1e8cff))}
-.card h3{font-size:17px;margin-bottom:6px}
-.card p{color:#9fb3d6;font-size:13px;line-height:1.7;min-height:44px}
-.more{display:inline-block;margin-top:10px;padding:4px 20px;border:1px solid var(--ac,var(--bd));border-radius:4px;font-size:13px;color:#cfe3ff}
+.card h3{font-size:17px;margin-bottom:6px;color:var(--ac,#fff)}
+.card p{color:var(--ac,#9fb3d6);font-size:13px;line-height:1.7;min-height:44px}
+.more{display:inline-block;margin-top:10px;padding:4px 20px;border:1px solid var(--ac,var(--bd));border-radius:4px;font-size:13px;color:var(--ac,#cfe3ff)}
 .more:hover{background:rgba(30,140,255,.25)}
 
 /* 关于我 */
