@@ -5,15 +5,10 @@ body{background:#020612;color:#fff;font-family:-apple-system,BlinkMacSystemFont,
 a{text-decoration:none;color:inherit}
 
 
-
-/* 背景 B：科技网格 + 蓝色光晕 + 连线光点 */
-body::before{content:"";position:fixed;inset:0;z-index:-6;background:
-radial-gradient(ellipse 80% 40% at 50% 0%,rgba(25,90,210,.55),transparent 70%),
-radial-gradient(ellipse 80% 35% at 50% 100%,rgba(10,80,160,.45),transparent 70%),
-linear-gradient(rgba(0,160,255,.09) 1px,transparent 1px) 0 0/40px 40px,
-linear-gradient(90deg,rgba(0,160,255,.09) 1px,transparent 1px) 0 0/40px 40px,
-linear-gradient(#050c20,#020612)}
+/* 背景：银河樱花图，铺满拉伸 */
+body::before{content:"";position:fixed;inset:0;z-index:-6;background:url("img/bg-galaxy.jpg") center center/100% 100% no-repeat}
 #particles-js{position:fixed;inset:0;z-index:-5}
+#starfield{position:fixed;inset:0;width:100vw;height:100vh;z-index:-4;pointer-events:none}
 
 /* 导航 */
 header{position:fixed;top:0;width:100%;z-index:999;backdrop-filter:blur(16px);background:rgba(2,8,25,.55);border-bottom:1px solid rgba(0,150,255,.2)}
@@ -45,10 +40,10 @@ nav a:hover,nav a.active{color:#2eaaff;border-color:#1e8cff}
 /* 项目卡片 */
 .projects{padding:36px 5% 8px}
 .cards{max-width:1250px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.card{position:relative;background:rgba(4,14,38,.65);border:1px solid var(--bd);border-radius:6px;padding:12px 12px 16px;text-align:center;backdrop-filter:blur(12px);transition:.3s}
+.card{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.02) 45%,rgba(10,22,48,.15));border:2px solid var(--bd);border:2px solid color-mix(in srgb,var(--ac,#2eaaff) 65%,transparent);border-radius:18px;padding:12px 12px 16px;text-align:center;-webkit-backdrop-filter:blur(10px) saturate(150%);backdrop-filter:blur(10px) saturate(150%);box-shadow:0 8px 28px rgba(2,6,20,.35),0 0 20px rgba(90,140,255,.14),inset 0 1px 0 rgba(255,255,255,.30),inset 0 -1px 0 rgba(255,255,255,.08),inset 1px 0 0 rgba(255,255,255,.10),inset -1px 0 0 rgba(255,255,255,.10);transition:.3s}
 .card:hover{transform:translateY(-6px);box-shadow:0 0 30px rgba(30,140,255,.45)}
 .num{position:absolute;left:14px;top:10px;color:var(--ac,#2eaaff);font-style:italic;font-size:15px}
-.ico{width:96px;height:96px;margin:4px auto 6px;display:flex;align-items:center;justify-content:center;font-size:50px;border-radius:50%;background:radial-gradient(circle,rgba(30,140,255,.55),transparent 70%);filter:drop-shadow(0 0 18px var(--ac,#1e8cff))}
+.ico{width:56px;height:56px;margin:4px auto 6px;display:flex;align-items:center;justify-content:center;font-size:30px;border-radius:50%;background:radial-gradient(circle,rgba(30,140,255,.55),transparent 70%);filter:drop-shadow(0 0 18px var(--ac,#1e8cff))}
 .card h3{font-size:17px;margin-bottom:6px}
 .card p{color:#9fb3d6;font-size:13px;line-height:1.7;min-height:44px}
 .more{display:inline-block;margin-top:10px;padding:4px 20px;border:1px solid var(--ac,var(--bd));border-radius:4px;font-size:13px;color:#cfe3ff}
@@ -77,7 +72,7 @@ nav a:hover,nav a.active{color:#2eaaff;border-color:#1e8cff}
 @media(max-width:600px){
 nav{padding:10px 14px}nav ul{gap:12px}nav a{font-size:13px}.nav-btn{padding:7px 12px;font-size:13px}
 .hero{padding-top:80px}.hero h1{font-size:40px;margin-top:34px}#typing{font-size:17px}.avatar-box{width:140px;height:140px}.avatar-ring{width:188px;height:188px;left:-24px;top:-24px}.hero-btns a,.hero-btns button{min-width:140px;padding:10px 18px;font-size:15px}.cards{gap:10px}
-.cards{grid-template-columns:repeat(2,1fr)}.card h3{font-size:14px}.card p{font-size:11.5px;min-height:0}.ico{width:76px;height:76px;font-size:40px}.more{padding:3px 14px;font-size:12px}.tools{gap:10px 4px}.tools span{font-size:10.5px}.tools b{width:34px;height:34px;font-size:12px}.wechat-box{padding:10px 20px;font-size:18px}.title{font-size:24px}}
+.cards{grid-template-columns:repeat(2,1fr)}.card h3{font-size:14px}.card p{font-size:11.5px;min-height:0}.ico{width:44px;height:44px;font-size:24px}.more{padding:3px 14px;font-size:12px}.tools{gap:10px 4px}.tools span{font-size:10.5px}.tools b{width:34px;height:34px;font-size:12px}.wechat-box{padding:10px 20px;font-size:18px}.title{font-size:24px}}
 
 /* 项目详情弹窗 */
 .card{cursor:pointer}
@@ -160,7 +155,7 @@ nav{padding:10px 14px}nav ul{gap:12px}nav a{font-size:13px}.nav-btn{padding:7px 
 .helix-fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
 /* 彩色连线画布由 JS 创建（.helix-fx），代替原来的单色光柱 */
 /* 螺旋里的卡片：位置由 JS 每帧算出，只做发光过渡，不过渡位移 */
-.helix .card{position:absolute;left:0;top:0;width:250px;margin:-110px 0 0 -125px;display:flex;flex-direction:column;justify-content:center;align-items:center;backface-visibility:hidden;transition:box-shadow .3s,border-color .3s;will-change:transform,opacity;border-color:var(--ac,var(--bd))}
+.helix .card{position:absolute;left:0;top:0;width:260px;margin:-65px 0 0 -130px;padding:8px 10px 10px;display:flex;flex-direction:column;justify-content:center;align-items:center;backface-visibility:hidden;transition:box-shadow .3s,border-color .3s;will-change:transform,opacity;border-color:var(--ac,var(--bd))}
 /* 转到正面的卡片：瞬间发光 */
 .card.front{border-color:var(--ac,#7ee6ff);box-shadow:0 0 46px 6px color-mix(in srgb,var(--ac,#00d4ff) 85%,transparent),inset 0 0 30px color-mix(in srgb,var(--ac,#00d4ff) 30%,transparent)}
 /* 工具卡片里的字母徽标 */
@@ -169,7 +164,7 @@ nav{padding:10px 14px}nav ul{gap:12px}nav a{font-size:13px}.nav-btn{padding:7px 
 /* 关于我只剩简介，改成单列 */
 .about-box{grid-template-columns:1fr}
 @media(max-width:600px){
-.helix .card{width:210px;margin:-110px 0 0 -105px}
+.helix .card{width:200px;margin:-65px 0 0 -100px}
 .helix .card h3{font-size:15px}
 .helix-stage{perspective:1000px}
 }
@@ -204,25 +199,3 @@ html.js .reveal.in{opacity:1;transform:none}
 /* 复制微信号提示（代替系统 alert，手机浏览器里也能正常显示） */
 .copy-toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,20px);z-index:3500;padding:12px 22px;border:1px solid #1e8cff;border-radius:30px;background:rgba(4,14,38,.92);color:#cfe8ff;font-size:15px;box-shadow:0 0 24px rgba(30,140,255,.55);opacity:0;pointer-events:none;transition:.3s;white-space:nowrap}
 .copy-toast.show{opacity:1;transform:translate(-50%,0)}
-
-/* ===== 科技背景层：模糊散光 + 电路/六边形/二进制 + 扫描线 + HUD 标签 ===== */
-/* 模糊散光（代替光柱）：没有硬边，就是一团晕开的光，铺满整个背景 */
-.diffuse-glow{position:fixed;left:50%;top:0;transform:translateX(-50%);width:70vw;height:100vh;z-index:-4;pointer-events:none;
-background:radial-gradient(ellipse 60% 55% at 50% 30%,rgba(0,190,255,.13),transparent 70%),
-radial-gradient(ellipse 45% 40% at 50% 65%,rgba(123,92,255,.10),transparent 70%),
-radial-gradient(ellipse 40% 30% at 50% 85%,rgba(255,77,141,.06),transparent 70%);
-filter:blur(24px)}
-/* 科技元素 SVG：电路走线、六边形、二进制、十字准星、边角 HUD */
-.tech-bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:-4;pointer-events:none}
-.tech-bg text{font-family:ui-monospace,Menlo,Consolas,monospace}
-/* 扫描线：很淡的一条亮线，上下慢慢扫 */
-.scan-line{position:fixed;left:0;right:0;top:0;height:2px;z-index:-4;pointer-events:none;
-background:linear-gradient(90deg,transparent,rgba(0,212,255,.35),transparent);
-box-shadow:0 0 24px 6px rgba(0,212,255,.12);
-animation:scan 9s linear infinite}
-@keyframes scan{from{transform:translateY(-10px)}to{transform:translateY(100vh)}}
-/* HUD 标签 */
-.hud-label{position:fixed;z-index:5;pointer-events:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10px;letter-spacing:.18em;color:rgba(0,212,255,.55)}
-.hud-label.tl{left:14px;top:70px}
-.hud-label.bl{left:14px;bottom:14px}
-@media (prefers-reduced-motion:reduce){.scan-line{animation:none;display:none}}
