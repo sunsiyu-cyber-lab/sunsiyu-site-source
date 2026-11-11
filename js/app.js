@@ -24,6 +24,34 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
 }
 
+// ===== 提示音：滑动到新卡片 / 点开卡片时响一声（无静音按钮） =====
+// 浏览器规定：声音要等用户先点一下页面才能播放，
+// 所以第一次点之前滑动是静音的，点过一次之后滑动和点开都会响
+let sfxCtx = null, lastBlipT = 0;
+function sfxUnlock() {
+  if (!sfxCtx) { try { sfxCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; } }
+  if (sfxCtx.state === "suspended") sfxCtx.resume();
+}
+["pointerdown", "touchstart", "keydown"].forEach(ev => document.addEventListener(ev, sfxUnlock));
+function blip(f1, f2, dur) {
+  if (!sfxCtx || sfxCtx.state !== "running") return;
+  const d = dur || 0.09, t = sfxCtx.currentTime;
+  const o = sfxCtx.createOscillator(), g = sfxCtx.createGain();
+  o.type = "sine";
+  o.frequency.setValueAtTime(f1, t);
+  o.frequency.exponentialRampToValueAtTime(f2, t + d);
+  g.gain.setValueAtTime(0.05, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + d);
+  o.connect(g); g.connect(sfxCtx.destination);
+  o.start(t); o.stop(t + d + 0.02);
+}
+function blipThrottled(f1, f2) {
+  const now = performance.now();
+  if (now - lastBlipT < 150) return;
+  lastBlipT = now;
+  blip(f1, f2);
+}
+
 // ===== 项目详情弹窗 =====
 const projects = [
   { ico:"📱", title:"微信小程序开发",
@@ -85,13 +113,14 @@ function closeModal() {
 }
 document.querySelectorAll(".card[data-i]").forEach(c => {
   c.addEventListener("click", e => {
+    blip(660, 990);
     const r = c.getBoundingClientRect(), d = document.createElement("span");
     d.className = "ripple"; d.style.left = (e.clientX - r.left || r.width / 2) + "px"; d.style.top = (e.clientY - r.top || r.height / 2) + "px";
     c.appendChild(d); c.classList.add("flash");
     setTimeout(() => { d.remove(); c.classList.remove("flash"); }, 760);
     setTimeout(() => openModal(+c.dataset.i), 220);
   });
-  c.addEventListener("keydown", e => { if (e.key === "Enter") openModal(+c.dataset.i); });
+  c.addEventListener("keydown", e => { if (e.key === "Enter") { blip(660, 990); openModal(+c.dataset.i); } });
 });
 document.querySelectorAll(".modal").forEach(m => m.addEventListener("click", e => { if (e.target === m) closeModal(); }));
 document.querySelectorAll(".modal-x").forEach(b => b.addEventListener("click", closeModal));
@@ -514,15 +543,20 @@ const FAKE_MESSAGES = [
 })();
 
 
-// 提示音已移除：右下角铃铛按钮取消，卡片转到正面 / 点开时不再出声。
+// 提示音：没有铃铛按钮了；卡片转到正面 / 点开时响一声（浏览器要先点一下页面才能出声）。
 
 // ===== 螺旋圆柱：卡片围着彩色线，滚动时依次转到正面 =====
 // 原理：每张卡片固定一个基础角度，滚动进度决定圆柱整体旋转角度；
-// 卡片的高度由它当前角度决定，角度越靠近正面越居中，
-// 转到背面的卡片渐隐（配合 backface-visibility 不会看到反面文字）。
-// 每张卡片一种颜色；一块画布跟在卡片后面画彩色连线 + 彩色粒子，
-// 转到正面或滑动时放冲击波。
+// 卡片上下位置由“展开角度”决定（绕几圈都不会重叠），
+// 角度越靠近正面越居中，转到背面的卡片渐隐（配合 backface-visibility 不会看到反面文字）。
+// 项目 8 张 + 标题方块 + 工具 16 张在同一条链上，
+// 更多定制开发下面直接就是“我会用到的工具”，再往下是工具方块。
+// 每张卡片一种颜色；一块画布跟在卡片后面画彩色连线 + 彩色粒子。
+// 整条链绕 2 圈（HELIX_TURNS），像龙盘在柱子上一圈一圈往上爬。
 const HELIX_COLORS = ["#00d4ff", "#ff4d8d", "#a259ff", "#46e696", "#ffd246", "#ff6c37", "#2e7bff", "#ff5c5c"];
+// 一圈一圈往上爬：整条链绕 2 圈（原来 1 圈），相邻两卡角度差翻倍，
+// 左右摆动更大，像龙盘在柱子上一圈一圈往上爬
+const HELIX_TURNS = 2;
 function initHelix(wrapId, helixId, cardSel, perCardVh) {
   const wrap = document.getElementById(wrapId);
   const helix = document.getElementById(helixId);
@@ -530,41 +564,41 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
   const cards = Array.from(helix.querySelectorAll(cardSel));
   const N = cards.length;
   if (!N) return null;
-  const step = 360 / N;
+  const step = (HELIX_TURNS * 360) / N;
   wrap.style.height = (N * (perCardVh || 70)) + "vh";
   // 每张卡片一种颜色
   cards.forEach((c, i) => c.style.setProperty("--ac", HELIX_COLORS[i % HELIX_COLORS.length]));
-  let R = 320, V = 1000, frontIdx = -1, firstRun = true, lastP = 0;
+  let R = 320, V = 1000, spacing = 250, maxH = 250, frontIdx = -1, firstRun = true;
   function measure() {
     const w = window.innerWidth;
-    R = w < 600 ? 175 : Math.min(w * 0.30, 320);
-    // 无缝连接：先恢复自然高度，量出同一条链里最高的卡片，
-    // 再把所有卡片拉成等高，间距设成卡片高（留 3px 重叠压住发丝缝），
-    // 相邻两块上下贴住，像一条链子绕在柱子上
+    R = w < 600 ? 160 : Math.min(w * 0.30, 320);
+    // 同一条链里的卡片等高、间距一致：先恢复自然高度，
+    // 量出最高的卡片，再把所有卡片拉成等高，
+    // 间距 = 卡片高 + 20px 空隙，分开一点，不重合也不离太远
     cards.forEach(c => { c.style.height = ""; c.style.marginTop = ""; });
-    let maxH = 0;
+    maxH = 0;
     cards.forEach(c => { maxH = Math.max(maxH, c.offsetHeight); });
-    let spacing;
     if (maxH > 50) {
       cards.forEach(c => { c.style.height = maxH + "px"; c.style.marginTop = (-maxH / 2) + "px"; });
-      spacing = maxH - 3;
+      spacing = maxH + 20;
     } else {
       spacing = w < 600 ? 220 : 250;
     }
-    V = (N * spacing) / 2;
+    // 卡片上下位置由“展开角度”决定（不是取模后的角度），
+    // 这样绕 2 圈时两圈的卡片不会重叠；相邻两卡垂直间距仍 = spacing
+    V = (N * spacing) / (2 * HELIX_TURNS);
   }
 
-  // ---------- 彩色连线 + 粒子 + 冲击波（画布，跟在卡片后面） ----------
+  // ---------- 彩色连线 + 粒子（画布，跟在卡片后面） ----------
   const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   const stage = wrap.querySelector(".helix-stage");
-  let fx = null;
   if (!reduceMotion && stage) {
     const cv = document.createElement("canvas");
     cv.className = "helix-fx";
     stage.insertBefore(cv, helix);
     const ctx = cv.getContext("2d");
     const dpr = window.devicePixelRatio || 1;
-    let W = 0, H = 0, parts = [], rings = [];
+    let W = 0, H = 0, parts = [];
     function resize() {
       W = stage.clientWidth; H = stage.clientHeight;
       cv.width = Math.max(1, W * dpr); cv.height = Math.max(1, H * dpr);
@@ -573,21 +607,19 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
     resize();
     window.addEventListener("resize", resize);
     const pick = () => HELIX_COLORS[(Math.random() * HELIX_COLORS.length) | 0];
+    // 卡片中心相对舞台（画布）的坐标；画布铺满舞台，所以和画布坐标一致
     function center(el) {
       const s = stage.getBoundingClientRect(), r = el.getBoundingClientRect();
       return { x: r.left + r.width / 2 - s.left, y: r.top + r.height / 2 - s.top };
     }
-    function burst(x, y, n, speed) {
-      for (let i = 0; i < n; i++) {
-        const a = Math.random() * 6.283, v = (0.4 + Math.random() * 0.6) * speed;
-        parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, t: 0, l: 500 + Math.random() * 700, s: 1.5 + Math.random() * 2.5, c: pick() });
-      }
-      if (parts.length > 260) parts.splice(0, parts.length - 260);
-    }
-    function ring(x, y) { rings.push({ x, y, r: 12, max: 190, t: 0, l: 650 }); if (rings.length > 6) rings.shift(); }
     function linePts() {
       const pts = [];
-      cards.forEach(c => { if (parseFloat(c.style.opacity || "1") > 0.08) pts.push(center(c)); });
+      cards.forEach(c => {
+        if (parseFloat(c.style.opacity || "1") > 0.08) {
+          const p = center(c);
+          if (p.y > -150 && p.y < H + 150) pts.push(p);   // 只取画面里的卡片，渐变才铺得满
+        }
+      });
       pts.sort((a, b) => a.y - b.y);
       return pts;
     }
@@ -609,13 +641,17 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
         // 彩色连线：穿过所有可见卡片中心
         if (pts.length > 1) {
           const ys = pts.map(p => p.y), minY = Math.min.apply(null, ys), maxY = Math.max.apply(null, ys);
+          // 彩色渐变：紫→粉→青→蓝→绿→黄，沿着线循环两次，颜色变化更密更彩
           const g = ctx.createLinearGradient(0, minY, 0, Math.max(maxY, minY + 1));
-          g.addColorStop(0, "#a259ff"); g.addColorStop(0.25, "#ff4d8d"); g.addColorStop(0.5, "#00d4ff"); g.addColorStop(0.75, "#2e7bff"); g.addColorStop(1, "#46e696");
+          const RAINBOW = ["#a259ff", "#ff4d8d", "#00d4ff", "#2e7bff", "#46e696", "#ffd246", "#a259ff", "#ff4d8d", "#00d4ff", "#2e7bff", "#46e696"];
+          RAINBOW.forEach((col, k) => g.addColorStop(k / (RAINBOW.length - 1), col));
           ctx.globalCompositeOperation = "source-over";
           ctx.lineCap = "round"; ctx.lineJoin = "round";
-          ctx.strokeStyle = g; ctx.globalAlpha = 0.16; ctx.lineWidth = 20; ctx.shadowBlur = 0;
+          ctx.strokeStyle = g; ctx.globalAlpha = 0.18; ctx.lineWidth = 24; ctx.shadowBlur = 0;
           smooth(ctx, pts); ctx.stroke();
-          ctx.globalAlpha = 1; ctx.lineWidth = 7; ctx.shadowColor = "rgba(160,110,255,.85)"; ctx.shadowBlur = 18;
+          ctx.globalAlpha = 1; ctx.lineWidth = 10; ctx.shadowColor = "rgba(160,110,255,.85)"; ctx.shadowBlur = 20;
+          smooth(ctx, pts); ctx.stroke();
+          ctx.globalAlpha = 0.9; ctx.lineWidth = 4; ctx.shadowBlur = 0;
           smooth(ctx, pts); ctx.stroke();
           ctx.shadowBlur = 0;
           // 线旁边的彩色粒子：沿着线随机飘
@@ -623,17 +659,8 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
             const p = pts[(Math.random() * pts.length) | 0];
             parts.push({ x: p.x + (Math.random() - 0.5) * 90, y: p.y + (Math.random() - 0.5) * 90, vx: (Math.random() - 0.5) * 0.5, vy: -0.2 - Math.random() * 0.5, t: 0, l: 1200 + Math.random() * 1000, s: 1 + Math.random() * 2, c: pick() });
           }
+          if (parts.length > 260) parts.splice(0, parts.length - 260);
         }
-        // 冲击波圆环
-        rings = rings.filter(r => (r.t += dt) < r.l);
-        rings.forEach(r => {
-          const k = r.t / r.l, rad = r.r + (r.max - r.r) * (1 - Math.pow(1 - k, 2));
-          ctx.globalCompositeOperation = "lighter";
-          ctx.globalAlpha = (1 - k) * 0.8;
-          ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3;
-          ctx.shadowColor = "#a259ff"; ctx.shadowBlur = 20;
-          ctx.beginPath(); ctx.arc(r.x, r.y, rad, 0, 6.283); ctx.stroke();
-        });
         // 粒子
         ctx.globalCompositeOperation = "lighter";
         parts = parts.filter(p => (p.t += dt) < p.l);
@@ -650,7 +677,6 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
-    fx = { burst, ring, center };
   }
 
   function update() {
@@ -658,13 +684,17 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
     const total = Math.max(1, rect.height - window.innerHeight);
     const p = Math.min(1, Math.max(0, -rect.top / total));
     const rot = p * (N - 1) * step;
+    // 直接紧凑：整条链往两边收——开头第一张、结尾最后一张各留 120px 呼吸感，
+    // 正面卡片不顶到屏边、不会被导航挡住，中间回到正中，不加重复卡
+    const yOff = (((window.innerHeight - maxH) / 2) - 120) * (2 * p - 1);
     let best = -1, bestF = -2;
     cards.forEach((c, i) => {
-      let a = (i * step - rot) % 360;
+      const u = i * step - rot;                        // 展开角度（不取模）：决定上下位置
+      let a = u % 360;                                 // 绕回一圈内的角度：决定朝向和明暗
       if (a > 180) a -= 360;
       if (a < -180) a += 360;
       const f = Math.cos(a * Math.PI / 180);          // 1 = 正面，-1 = 背面
-      const y = (a / 180) * V;
+      const y = (u / 180) * V + yOff;
       const s = 0.82 + 0.18 * Math.max(0, f);
       const o = Math.max(0, Math.min(1, (f + 0.25) / 0.9));
       c.style.transform = "translateY(" + y.toFixed(1) + "px) rotateY(" + a.toFixed(1) + "deg) translateZ(" + R.toFixed(0) + "px) scale(" + s.toFixed(3) + ")";
@@ -675,22 +705,9 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
       if (frontIdx >= 0) cards[frontIdx].classList.remove("front");
       frontIdx = best;
       cards[frontIdx].classList.add("front");
-      // 转到正面：冲击波 + 粒子爆开（标题方块不要冲击波）
-      if (fx && !firstRun && !cards[frontIdx].classList.contains("title-card")) {
-        const c = fx.center(cards[frontIdx]);
-        fx.ring(c.x, c.y);
-        fx.burst(c.x, c.y, 26, 3.2);
-      }
+      // 转到正面：响一声提示音（不要冲击波了）
+      if (!firstRun) blipThrottled(880, 1320);
     }
-    // 滑动时：按滑动幅度在正面卡片周围放粒子，像冲击波一样散开（标题方块不要）
-    if (fx && !firstRun && frontIdx >= 0 && !cards[frontIdx].classList.contains("title-card")) {
-      const dp = Math.abs(p - lastP);
-      if (dp > 0.001) {
-        const c = fx.center(cards[frontIdx]);
-        fx.burst(c.x, c.y, Math.min(5, Math.round(dp * 900)), 2.2);
-      }
-    }
-    lastP = p;
     firstRun = false;
   }
   let ticking = false;
@@ -705,8 +722,20 @@ function initHelix(wrapId, helixId, cardSel, perCardVh) {
   update();
   return null;
 }
-initHelix("helix-projects-wrap", "helix-projects", ".card[data-i]", 70);
-initHelix("helix-tools-wrap", "helix-tools", ".tool-card", 55);
+// 项目 8 张 + 标题方块 + 工具 16 张，一共 25 张在同一条链上
+// 每张卡 32vh 滚动（原来 55vh）：整条链 800vh，换一张卡约滚 29vh，紧凑不空
+initHelix("helix-all-wrap", "helix-all", ".card", 32);
+
+// 导航“我的工具”：滚到标题方块转到正面的位置（整条链的 1/3 处）
+function scrollToTools() {
+  const wrap = document.getElementById("helix-all-wrap");
+  if (!wrap) return;
+  const r = wrap.getBoundingClientRect();
+  const total = Math.max(1, r.height - window.innerHeight);
+  window.scrollTo({ top: window.scrollY + r.top + total / 3, behavior: "smooth" });
+}
+const navTools = document.getElementById("nav-tools");
+if (navTools) navTools.addEventListener("click", e => { e.preventDefault(); scrollToTools(); });
 
 // ===== 工具卡片点击（螺旋版）：点开工具介绍弹窗 =====
 function openToolCard(el) {
@@ -725,6 +754,7 @@ function openToolCard(el) {
 document.querySelectorAll(".tool-card").forEach(el => {
   if (el.classList.contains("title-card")) return;   // 标题方块点不开弹窗
   el.addEventListener("click", e => {
+    blip(660, 990);
     const r = el.getBoundingClientRect(), d = document.createElement("span");
     d.className = "ripple";
     d.style.left = (e.clientX - r.left || r.width / 2) + "px";
@@ -734,7 +764,7 @@ document.querySelectorAll(".tool-card").forEach(el => {
     setTimeout(() => { d.remove(); el.classList.remove("flash"); }, 760);
     setTimeout(() => openToolCard(el), 220);
   });
-  el.addEventListener("keydown", e => { if (e.key === "Enter") openToolCard(el); });
+  el.addEventListener("keydown", e => { if (e.key === "Enter") { blip(660, 990); openToolCard(el); } });
 });
 
 // ===== Active Theory 风格特效：惯性平滑滚动 + 自定义光标 + 入场动画 + 横向滚动条 =====
