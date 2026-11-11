@@ -9,6 +9,7 @@ a{text-decoration:none;color:inherit}
 body::before{content:"";position:fixed;inset:0;z-index:-6;background:url("../img/bg-galaxy.JPG") center center/100% 100% no-repeat}
 #particles-js{position:fixed;inset:0;z-index:-5}
 #starfield{position:fixed;inset:0;width:100vw;height:100vh;z-index:-4;pointer-events:none}
+#meteor-shower{position:fixed;inset:0;width:100vw;height:100vh;z-index:-3;pointer-events:none}
 
 /* 导航 */
 header{position:fixed;top:0;width:100%;z-index:999;backdrop-filter:blur(16px);background:rgba(2,8,25,.55);border-bottom:1px solid rgba(0,150,255,.2)}
@@ -40,7 +41,7 @@ nav a:hover,nav a.active{color:#2eaaff;border-color:#1e8cff}
 /* 项目卡片 */
 .projects{padding:36px 5% 8px}
 .cards{max-width:1250px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.card{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.02) 45%,rgba(10,22,48,.15));border:2px solid var(--bd);border:2px solid color-mix(in srgb,var(--ac,#2eaaff) 65%,transparent);border-radius:18px;padding:12px 12px 16px;text-align:center;-webkit-backdrop-filter:blur(10px) saturate(150%);backdrop-filter:blur(10px) saturate(150%);box-shadow:0 8px 28px rgba(2,6,20,.35),0 0 20px rgba(90,140,255,.14),inset 0 1px 0 rgba(255,255,255,.30),inset 0 -1px 0 rgba(255,255,255,.08),inset 1px 0 0 rgba(255,255,255,.10),inset -1px 0 0 rgba(255,255,255,.10);transition:.3s}
+.card{position:relative;background:transparent;border:2px solid var(--bd);border:2px solid color-mix(in srgb,var(--ac,#2eaaff) 65%,transparent);border-radius:18px;padding:12px 12px 16px;text-align:center;box-shadow:0 0 20px rgba(90,140,255,.14),inset 0 1px 0 rgba(255,255,255,.18);transition:.3s}
 .card:hover{transform:translateY(-6px);box-shadow:0 0 30px rgba(30,140,255,.45)}
 .num{position:absolute;left:14px;top:10px;color:var(--ac,#2eaaff);font-style:italic;font-size:15px}
 .ico{width:56px;height:56px;margin:4px auto 6px;display:flex;align-items:center;justify-content:center;font-size:30px;border-radius:50%;background:radial-gradient(circle,rgba(30,140,255,.55),transparent 70%);filter:drop-shadow(0 0 18px var(--ac,#1e8cff))}
