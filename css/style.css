@@ -43,7 +43,7 @@ nav a:hover,nav a.active{color:#2eaaff;border-color:#1e8cff}
 .sub{text-align:center;color:#8aa0c8;margin:4px 0 20px;font-size:13px;letter-spacing:.2em}
 
 /* 项目卡片 */
-.projects{padding:36px 5% 12px}
+.projects{padding:36px 5% 8px}
 .cards{max-width:1250px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .card{position:relative;background:rgba(4,14,38,.65);border:1px solid var(--bd);border-radius:6px;padding:12px 12px 16px;text-align:center;backdrop-filter:blur(12px);transition:.3s}
 .card:hover{transform:translateY(-6px);box-shadow:0 0 30px rgba(30,140,255,.45)}
@@ -55,8 +55,8 @@ nav a:hover,nav a.active{color:#2eaaff;border-color:#1e8cff}
 .more:hover{background:rgba(30,140,255,.25)}
 
 /* 关于我 */
-.about{padding:28px 5% 12px}
-.about-box{max-width:1250px;margin:16px auto 0;display:grid;grid-template-columns:1.1fr 1fr;gap:0;background:rgba(4,14,38,.6);border:1px solid var(--bd);border-radius:6px}
+.about{padding:16px 5% 12px}
+.about-box{max-width:1250px;margin:8px auto 0;display:grid;grid-template-columns:1.1fr 1fr;gap:0;background:rgba(4,14,38,.6);border:1px solid var(--bd);border-radius:6px}
 .about-box>div{padding:18px 24px}
 .about-box>div+div{border-left:1px solid var(--bd)}
 .about-box h3{font-size:17px;margin-bottom:10px}
@@ -160,7 +160,7 @@ nav{padding:10px 14px}nav ul{gap:12px}nav a{font-size:13px}.nav-btn{padding:7px 
 .helix-fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
 /* 彩色连线画布由 JS 创建（.helix-fx），代替原来的单色光柱 */
 /* 螺旋里的卡片：位置由 JS 每帧算出，只做发光过渡，不过渡位移 */
-.helix .card{position:absolute;left:0;top:0;width:300px;margin:-110px 0 0 -150px;backface-visibility:hidden;transition:box-shadow .3s,border-color .3s;will-change:transform,opacity;border-color:var(--ac,var(--bd))}
+.helix .card{position:absolute;left:0;top:0;width:250px;margin:-110px 0 0 -125px;display:flex;flex-direction:column;justify-content:center;align-items:center;backface-visibility:hidden;transition:box-shadow .3s,border-color .3s;will-change:transform,opacity;border-color:var(--ac,var(--bd))}
 /* 转到正面的卡片：瞬间发光 */
 .card.front{border-color:var(--ac,#7ee6ff);box-shadow:0 0 46px 6px color-mix(in srgb,var(--ac,#00d4ff) 85%,transparent),inset 0 0 30px color-mix(in srgb,var(--ac,#00d4ff) 30%,transparent)}
 /* 工具卡片里的字母徽标 */
@@ -169,7 +169,7 @@ nav{padding:10px 14px}nav ul{gap:12px}nav a{font-size:13px}.nav-btn{padding:7px 
 /* 关于我只剩简介，改成单列 */
 .about-box{grid-template-columns:1fr}
 @media(max-width:600px){
-.helix .card{width:250px;margin:-110px 0 0 -125px}
+.helix .card{width:210px;margin:-110px 0 0 -105px}
 .helix .card h3{font-size:15px}
 .helix-stage{perspective:1000px}
 }
@@ -195,15 +195,34 @@ html.js .reveal.in{opacity:1;transform:none}
 .marquee-track span{font-size:34px;font-weight:800;letter-spacing:.1em;white-space:nowrap;color:transparent;-webkit-text-stroke:1px rgba(0,212,255,.55)}
 @media(max-width:600px){.marquee-track span{font-size:22px}.marquee{padding:14px 0 6px}}
 
-/* 工具卡片更小一点（标题方块也是工具链里的一块） */
-#helix-tools .card{width:250px;margin:-100px 0 0 -125px}
-#helix-tools .card h3{font-size:15px}
-#helix-tools .card p{font-size:12px;min-height:0}
-#helix-tools .t-ico{width:64px;height:64px}
-#helix-tools .t-ico b{width:48px;height:48px;font-size:16px}
-#helix-tools .title-card h3{font-size:20px}
-#helix-tools .title-card{display:flex;flex-direction:column;justify-content:center;align-items:center}
-@media(max-width:600px){#helix-tools .card{width:210px;margin:-95px 0 0 -105px}}
+/* 工具卡片里的字和徽标小一点（卡片本身和项目一样大） */
+.tool-card h3{font-size:15px}
+.tool-card p{font-size:12px;min-height:0}
+.tool-card .t-ico{width:64px;height:64px}
+.tool-card .t-ico b{width:48px;height:48px;font-size:16px}
+.title-card h3{font-size:20px}
 /* 复制微信号提示（代替系统 alert，手机浏览器里也能正常显示） */
 .copy-toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,20px);z-index:3500;padding:12px 22px;border:1px solid #1e8cff;border-radius:30px;background:rgba(4,14,38,.92);color:#cfe8ff;font-size:15px;box-shadow:0 0 24px rgba(30,140,255,.55);opacity:0;pointer-events:none;transition:.3s;white-space:nowrap}
 .copy-toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ===== 科技背景层：模糊散光 + 电路/六边形/二进制 + 扫描线 + HUD 标签 ===== */
+/* 模糊散光（代替光柱）：没有硬边，就是一团晕开的光，铺满整个背景 */
+.diffuse-glow{position:fixed;left:50%;top:0;transform:translateX(-50%);width:70vw;height:100vh;z-index:-4;pointer-events:none;
+background:radial-gradient(ellipse 60% 55% at 50% 30%,rgba(0,190,255,.13),transparent 70%),
+radial-gradient(ellipse 45% 40% at 50% 65%,rgba(123,92,255,.10),transparent 70%),
+radial-gradient(ellipse 40% 30% at 50% 85%,rgba(255,77,141,.06),transparent 70%);
+filter:blur(24px)}
+/* 科技元素 SVG：电路走线、六边形、二进制、十字准星、边角 HUD */
+.tech-bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:-4;pointer-events:none}
+.tech-bg text{font-family:ui-monospace,Menlo,Consolas,monospace}
+/* 扫描线：很淡的一条亮线，上下慢慢扫 */
+.scan-line{position:fixed;left:0;right:0;top:0;height:2px;z-index:-4;pointer-events:none;
+background:linear-gradient(90deg,transparent,rgba(0,212,255,.35),transparent);
+box-shadow:0 0 24px 6px rgba(0,212,255,.12);
+animation:scan 9s linear infinite}
+@keyframes scan{from{transform:translateY(-10px)}to{transform:translateY(100vh)}}
+/* HUD 标签 */
+.hud-label{position:fixed;z-index:5;pointer-events:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10px;letter-spacing:.18em;color:rgba(0,212,255,.55)}
+.hud-label.tl{left:14px;top:70px}
+.hud-label.bl{left:14px;bottom:14px}
+@media (prefers-reduced-motion:reduce){.scan-line{animation:none;display:none}}
