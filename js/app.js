@@ -814,3 +814,69 @@ document.documentElement.classList.add("js");
   if (reduce) { draw(0); return; }
   (function loop(now) { draw(now); requestAnimationFrame(loop); })(0);
 })();
+
+// ---------- 五彩流星雨：细单线，从亮到消失（右上→左下） ----------
+(function () {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const cv = document.createElement("canvas");
+  cv.id = "meteor-shower";
+  document.body.appendChild(cv);
+  const ctx = cv.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  const COLORS = ["#4dd8ff", "#ff5da2", "#ffd166", "#b388ff", "#7cfc9a", "#6a8dff"];
+  let W = 0, H = 0;
+  function size() {
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = Math.max(1, W * dpr); cv.height = Math.max(1, H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  size();
+  window.addEventListener("resize", size);
+  function hexA(hex, a) {
+    const n = parseInt(hex.slice(1), 16);
+    return "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a.toFixed(3) + ")";
+  }
+  const meteors = [];
+  let nextSpawn = 0;
+  function spawn() {
+    const fromTop = Math.random() < 0.6;
+    const x = fromTop ? W * 0.1 + Math.random() * W * 0.9 : W + 20;
+    const y = fromTop ? -20 : Math.random() * H * 0.4;
+    const sp = 7 + Math.random() * 4;
+    meteors.push({
+      x: x, y: y, vx: -sp, vy: sp * (0.55 + Math.random() * 0.2),
+      len: 80 + Math.random() * 50,
+      col: COLORS[(Math.random() * COLORS.length) | 0],
+      age: 0, life: 70 + Math.random() * 40
+    });
+  }
+  function frame(now) {
+    ctx.clearRect(0, 0, W, H);
+    if (now >= nextSpawn && meteors.length < 4) {
+      spawn();
+      nextSpawn = now + 700 + Math.random() * 700;
+    }
+    for (let i = meteors.length - 1; i >= 0; i--) {
+      const m = meteors[i];
+      m.age++;
+      m.x += m.vx; m.y += m.vy;
+      if (m.age >= m.life || m.x < -160 || m.y > H + 40) { meteors.splice(i, 1); continue; }
+      const lifeF = 1 - m.age / m.life;
+      const vl = Math.hypot(m.vx, m.vy);
+      const tx = m.x - (m.vx / vl) * m.len;
+      const ty = m.y - (m.vy / vl) * m.len;
+      const g = ctx.createLinearGradient(m.x, m.y, tx, ty);
+      g.addColorStop(0, hexA(m.col, 0.95 * lifeF));
+      g.addColorStop(1, hexA(m.col, 0));
+      ctx.strokeStyle = g;
+      ctx.lineWidth = 1.5;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(m.x, m.y);
+      ctx.lineTo(tx, ty);
+      ctx.stroke();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
