@@ -6,7 +6,7 @@ a{text-decoration:none;color:inherit}
 
 
 /* 背景：银河樱花图，铺满拉伸 */
-body::before{content:"";position:fixed;inset:0;z-index:-6;background:url("../img/bg-galaxy.JPG") center center/100% 100% no-repeat}
+body::before{content:"";position:fixed;inset:0;z-index:-6;background:url("../img/bg-galaxy.jpg") center center/100% 100% no-repeat}
 #particles-js{position:fixed;inset:0;z-index:-5}
 #starfield{position:fixed;inset:0;width:100vw;height:100vh;z-index:-4;pointer-events:none}
 #meteor-shower{position:fixed;inset:0;width:100vw;height:100vh;z-index:-3;pointer-events:none}
@@ -43,11 +43,11 @@ nav a:hover,nav a.active{color:#2eaaff;border-color:#1e8cff}
 .cards{max-width:1250px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .card{position:relative;background:transparent;border:2px solid var(--bd);border:2px solid color-mix(in srgb,var(--ac,#2eaaff) 65%,transparent);border-radius:18px;padding:12px 12px 16px;text-align:center;box-shadow:0 0 20px rgba(90,140,255,.14),inset 0 1px 0 rgba(255,255,255,.18);transition:.3s}
 .card:hover{transform:translateY(-6px);box-shadow:0 0 30px rgba(30,140,255,.45)}
-.num{position:absolute;left:14px;top:10px;color:var(--ac,#2eaaff);font-style:italic;font-size:15px}
+.num{position:absolute;left:14px;top:10px;color:var(--ac,#2eaaff);font-style:italic;font-size:17px;font-weight:700}
 .ico{width:56px;height:56px;margin:4px auto 6px;display:flex;align-items:center;justify-content:center;font-size:30px;border-radius:50%;background:radial-gradient(circle,rgba(30,140,255,.55),transparent 70%);filter:drop-shadow(0 0 18px var(--ac,#1e8cff))}
-.card h3{font-size:17px;margin-bottom:6px;color:var(--ac,#fff)}
-.card p{color:var(--ac,#9fb3d6);font-size:13px;line-height:1.7;min-height:44px}
-.more{display:inline-block;margin-top:10px;padding:4px 20px;border:1px solid var(--ac,var(--bd));border-radius:4px;font-size:13px;color:var(--ac,#cfe3ff)}
+.card h3{font-size:20px;margin-bottom:6px;color:var(--ac,#fff);font-weight:700}
+.card p{color:var(--ac,#9fb3d6);font-size:15px;line-height:1.7;min-height:44px;font-weight:600}
+.more{display:inline-block;margin-top:10px;padding:4px 20px;border:1px solid var(--ac,var(--bd));border-radius:4px;font-size:15px;color:var(--ac,#cfe3ff);font-weight:700}
 .more:hover{background:rgba(30,140,255,.25)}
 
 /* 关于我 */
@@ -73,7 +73,7 @@ nav a:hover,nav a.active{color:#2eaaff;border-color:#1e8cff}
 @media(max-width:600px){
 nav{padding:10px 14px}nav ul{gap:12px}nav a{font-size:13px}.nav-btn{padding:7px 12px;font-size:13px}
 .hero{padding-top:80px}.hero h1{font-size:40px;margin-top:34px}#typing{font-size:17px}.avatar-box{width:140px;height:140px}.avatar-ring{width:188px;height:188px;left:-24px;top:-24px}.hero-btns a,.hero-btns button{min-width:140px;padding:10px 18px;font-size:15px}.cards{gap:10px}
-.cards{grid-template-columns:repeat(2,1fr)}.card h3{font-size:14px}.card p{font-size:11.5px;min-height:0}.ico{width:44px;height:44px;font-size:24px}.more{padding:3px 14px;font-size:12px}.tools{gap:10px 4px}.tools span{font-size:10.5px}.tools b{width:34px;height:34px;font-size:12px}.wechat-box{padding:10px 20px;font-size:18px}.title{font-size:24px}}
+.cards{grid-template-columns:repeat(2,1fr)}.card h3{font-size:17px}.card p{font-size:14px;min-height:0}.ico{width:44px;height:44px;font-size:24px}.more{padding:3px 14px;font-size:14px}.tools{gap:10px 4px}.tools span{font-size:10.5px}.tools b{width:34px;height:34px;font-size:12px}.wechat-box{padding:10px 20px;font-size:18px}.title{font-size:24px}}
 
 /* 项目详情弹窗 */
 .card{cursor:pointer}
@@ -166,7 +166,7 @@ nav{padding:10px 14px}nav ul{gap:12px}nav a{font-size:13px}.nav-btn{padding:7px 
 .about-box{grid-template-columns:1fr}
 @media(max-width:600px){
 .helix .card{width:200px;margin:-65px 0 0 -100px}
-.helix .card h3{font-size:15px}
+.helix .card h3{font-size:18px}
 .helix-stage{perspective:1000px}
 }
 
@@ -192,11 +192,11 @@ html.js .reveal.in{opacity:1;transform:none}
 @media(max-width:600px){.marquee-track span{font-size:22px}.marquee{padding:14px 0 6px}}
 
 /* 工具卡片里的字和徽标小一点（卡片本身和项目一样大） */
-.tool-card h3{font-size:15px}
-.tool-card p{font-size:12px;min-height:0}
+.tool-card h3{font-size:18px}
+.tool-card p{font-size:14px;min-height:0}
 .tool-card .t-ico{width:64px;height:64px}
 .tool-card .t-ico b{width:48px;height:48px;font-size:16px}
-.title-card h3{font-size:20px}
+.title-card h3{font-size:22px}
 /* 复制微信号提示（代替系统 alert，手机浏览器里也能正常显示） */
 .copy-toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,20px);z-index:3500;padding:12px 22px;border:1px solid #1e8cff;border-radius:30px;background:rgba(4,14,38,.92);color:#cfe8ff;font-size:15px;box-shadow:0 0 24px rgba(30,140,255,.55);opacity:0;pointer-events:none;transition:.3s;white-space:nowrap}
 .copy-toast.show{opacity:1;transform:translate(-50%,0)}
