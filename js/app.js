@@ -880,3 +880,23 @@ document.documentElement.classList.add("js");
   }
   requestAnimationFrame(frame);
 })();
+
+// ===== 演讲人物：点一下鼓掌，鼓完回到原来姿势 =====
+(function () {
+  const box = document.getElementById("presenter");
+  const img = document.getElementById("presenter-img");
+  if (!box || !img) return;
+  // 预加载鼓掌动图，点的时候不卡
+  const clapPre = new Image();
+  clapPre.src = "img/presenter-clap.GIF?v=36";
+  let clapping = false;
+  box.addEventListener("click", () => {
+    if (clapping) return;
+    clapping = true;
+    img.src = "img/presenter-clap.GIF?v=36";
+    setTimeout(() => {
+      img.src = "img/presenter.GIF?v=36";
+      clapping = false;
+    }, 1000);
+  });
+})();
