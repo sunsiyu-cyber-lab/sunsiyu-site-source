@@ -200,3 +200,8 @@ html.js .reveal.in{opacity:1;transform:none}
 /* 复制微信号提示（代替系统 alert，手机浏览器里也能正常显示） */
 .copy-toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,20px);z-index:3500;padding:12px 22px;border:1px solid #1e8cff;border-radius:30px;background:rgba(4,14,38,.92);color:#cfe8ff;font-size:15px;box-shadow:0 0 24px rgba(30,140,255,.55);opacity:0;pointer-events:none;transition:.3s;white-space:nowrap}
 .copy-toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* 演讲人物：版本二（一手托下巴），小一号；固定在屏幕右侧、点赞按钮下方，上下滑动时不动；点一下会鼓掌 */
+.presenter{position:fixed;right:8px;top:210px;z-index:1500;width:145px;cursor:pointer}
+.presenter img{display:block;width:100%;height:auto}
+@media(max-width:600px){.presenter{right:0;top:190px;width:120px}}
