@@ -269,6 +269,20 @@ const SUPABASE_KEY = "sb_publishable_GQca5ruj4r-uOuP5ciPwGA_5uI0yLrk";   // 填 
   const KEY = "sy_like_v2";
   const btn = document.getElementById("like-btn"), num = document.getElementById("like-num"), tip = document.getElementById("like-tip");
   if (!btn) return;
+  // 点赞就比心：点一下赞，演讲人物比个心（每次点都比心，哪怕今天已经点过）
+  const presenterImg = document.getElementById("presenter-img");
+  const heartPre = new Image();
+  heartPre.src = "img/presenter-heart.GIF?v=37";
+  let hearting = false;
+  function showHeart() {
+    if (!presenterImg || hearting) return;
+    hearting = true;
+    presenterImg.src = "img/presenter-heart.GIF?v=37";
+    setTimeout(() => {
+      presenterImg.src = "img/presenter.GIF?v=37";
+      hearting = false;
+    }, 1500);
+  }
   const today = () => { const d = new Date(), p = n => String(n).padStart(2, "0"); return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()); };
   let data = { date: "", total: 0 };          // date：最近一次点赞的日期；total：这个浏览器累计点了几次
   try {
@@ -313,6 +327,7 @@ const SUPABASE_KEY = "sb_publishable_GQca5ruj4r-uOuP5ciPwGA_5uI0yLrk";   // 填 
     }
   }
   btn.addEventListener("click", () => {
+    showHeart();
     if (likedToday()) {                // 今天点过了：只提示，不再加 1
       btn.classList.remove("shake"); void btn.offsetWidth; btn.classList.add("shake");
       tip.textContent = "今天已经点过赞啦，明天再来哦！"; return;
@@ -888,14 +903,14 @@ document.documentElement.classList.add("js");
   if (!box || !img) return;
   // 预加载鼓掌动图，点的时候不卡
   const clapPre = new Image();
-  clapPre.src = "img/presenter-clap.GIF?v=36";
+  clapPre.src = "img/presenter-clap.GIF?v=37";
   let clapping = false;
   box.addEventListener("click", () => {
     if (clapping) return;
     clapping = true;
-    img.src = "img/presenter-clap.GIF?v=36";
+    img.src = "img/presenter-clap.GIF?v=37";
     setTimeout(() => {
-      img.src = "img/presenter.GIF?v=36";
+      img.src = "img/presenter.GIF?v=37";
       clapping = false;
     }, 1000);
   });
